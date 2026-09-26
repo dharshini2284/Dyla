@@ -321,3 +321,18 @@ def test_style_clusters_merge_via_name_key(tmp_path):
     assert without[1] != without[2]          # the bug
     assert with_key[1] == with_key[2]        # the fix
     assert with_key[3] != with_key[1]        # and it does not over-merge
+
+
+def test_studio_html_is_packaged():
+    """Regression: the .html files were missing from a real (non-editable) install.
+
+    An editable install resolves to the source tree and hides this, so the check
+    is that the files resolve relative to the IMPORTED module, which is what the
+    server actually does at runtime.
+    """
+    from pathlib import Path as _P
+
+    import vpm.studio
+    root = _P(vpm.studio.__file__).parent
+    for name in ("app.html", "ui.html"):
+        assert (root / name).is_file(), f"{name} missing next to the installed module"

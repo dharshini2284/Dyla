@@ -85,8 +85,25 @@ There is also **no authentication** on this server. `--host` defaults to
 loopback for that reason; anything public should sit behind the platform's own
 auth (Cloud Run's `--no-allow-unauthenticated`, or a reverse proxy).
 
-## Status
+## Verified
 
-The `Dockerfile` is written but **has not been built or run here** — the Docker
-daemon was not running on the build machine. The bundle step, the `--host` flag
-and the server itself are all verified; the image is not.
+Built and run. Inside the container:
+
+```
+IN-CATALOGUE       refused=False  p=1.000  top1=11198964 Puma 0.763
+                   distractor=0.335  overlay=yes
+OUT-OF-CATALOGUE   refused=True   p=0.024  top1=11334966 Puma 0.547
+                   distractor=0.607  overlay=yes
+```
+
+Container RSS settled at **825 MB** — lower than the 1.08 GB measured natively on
+macOS, so Oracle's 1 GB AMD micro shape is borderline viable rather than ruled
+out. The ARM shape is still the better target.
+
+Building it caught a packaging bug that no test could have: the studio's two
+`.html` files were absent from a real install, because `pyproject.toml` declared
+no package data. An **editable** install hides this completely — it resolves to
+the source tree, where the HTML sits beside the modules — so the whole test suite
+passed against broken packaging. Fixed with `[tool.setuptools.package-data]`, and
+there is now a regression test that resolves the files relative to the *imported*
+module rather than the repo.

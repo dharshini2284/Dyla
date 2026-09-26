@@ -25,3 +25,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# The studio serves two .html files that live beside the modules. Without this
+# they are absent from a real install -- an editable install masks the bug,
+# because it points at the source tree where the files sit next to the code.
+[tool.setuptools.package-data]
+"vpm.studio" = ["*.html"]
