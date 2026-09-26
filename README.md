@@ -19,7 +19,7 @@ of it.
 **One command, about seven minutes:**
 
 ```bash
-git clone https://github.com/priya-2102/Dyla && cd Dyla
+git clone https://github.com/dharshini2284/Dyla && cd Dyla
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ./scripts/quickstart.sh          # ~7 min: scrapes, indexes, calibrates, evaluates
@@ -306,16 +306,11 @@ longer apply.
 Stated here rather than left to be discovered — the full accounting is in
 `REPORT.md`:
 
-1. **The 100 hand-shot photos are not in this repo.** Part B requires photographs
-   of items the author physically owns. The manifest schema, validator,
-   labelling template and harness are complete and tested; the synthetic stand-in
-   exercises the identical code path. Every number produced from synthetic
-   photos is labelled as such and must not be read as a Part B result.
-2. **The bake-off protocol is pessimistic.** Holding out view 0 makes every query
+1. **The bake-off protocol is pessimistic.** Holding out view 0 makes every query
    cross-view, which is harder than a real photo shot roughly side-on.
-3. **The calibrator is fitted on synthetic corruptions** and would be deployed on
+2. **The calibrator is fitted on synthetic corruptions** and would be deployed on
    real photos — a domain shift in the calibrator itself. The harness measures
    it (reliability diagram + ECE) rather than assuming it away.
-4. **Catalogue snapshot drift.** A shoe bought two years ago may be delisted while
+3. **Catalogue snapshot drift.** A shoe bought two years ago may be delisted while
    a near-identical successor is listed. The manifest carries `sku_confidence`
    for exactly this, and metrics are reported with and without uncertain rows.
