@@ -61,7 +61,7 @@ Requires Python 3.11+. On Apple Silicon, PyTorch MPS is used automatically; the
 code falls back to CPU everywhere.
 
 ```bash
-git clone <this repo> && cd Dyla
+git clone https://github.com/dharshini2284/Dyla.git && cd Dyla
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
