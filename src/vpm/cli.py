@@ -122,8 +122,8 @@ def _ui(args):
           f"distractors {len(dist) if dist else 0}")
     serve(photos=Path(args.photos), manifest=Path(args.manifest), images=Path(args.images),
           items=Path(args.items) if args.items else None, index=Path(args.index),
-          port=args.port, matcher=matcher, calibrator=cal, refuser=ref,
-          distractors=dist, landing="/ui")
+          port=args.port, host=args.host, matcher=matcher, calibrator=cal,
+          refuser=ref, distractors=dist, landing="/ui")
 
 
 def _label(args):
@@ -138,7 +138,7 @@ def _label(args):
         matcher, _ce = _load_matcher(args)
     serve(photos=Path(args.photos), manifest=Path(args.manifest),
           images=Path(args.images), items=Path(args.items) if args.items else None,
-          index=Path(args.index), port=args.port, matcher=matcher)
+          index=Path(args.index), port=args.port, host=args.host, matcher=matcher)
 
 
 def _build_index(args):
@@ -291,6 +291,9 @@ def main() -> None:
     ui.add_argument("--photos", default="data/testset/photos")
     ui.add_argument("--manifest", default="data/testset/manifest.csv")
     ui.add_argument("--port", type=int, default=8765)
+    ui.add_argument("--host", default="127.0.0.1",
+                    help="bind address; containers need 0.0.0.0 (no auth, so keep "
+                         "it on loopback locally)")
     ui.add_argument("--cap-views", type=int, default=4)
     ui.add_argument("--localise", action="store_true")
     ui.add_argument("--no-tta", action="store_true")
@@ -304,6 +307,7 @@ def main() -> None:
     lb.add_argument("--items", default="data/items.jsonl")
     lb.add_argument("--index", default="data/index.npz")
     lb.add_argument("--port", type=int, default=8765)
+    lb.add_argument("--host", default="127.0.0.1")
     lb.add_argument("--cap-views", type=int, default=4)
     lb.add_argument("--localise", action="store_true")
     lb.add_argument("--no-tta", action="store_true")

@@ -8,3 +8,8 @@ __pycache__/
 .DS_Store
 models/
 SUBMISSION_EMAIL.md
+
+# Deployment bundle: regenerable with scripts/package_deploy.py, ~28 MB of
+# thumbnails. (The bare `data/` rule above already matches deploy/bundle/data
+# at any depth; this is here so that is deliberate rather than incidental.)
+deploy/bundle/

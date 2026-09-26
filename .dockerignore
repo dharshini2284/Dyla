@@ -1,0 +1,12 @@
+data/images
+data/refs_*.jsonl
+data/items_*.jsonl
+data/testset_synthetic
+data/index_grown.npz
+reports/
+logs/
+tests/
+.git
+.venv
+__pycache__
+*.pyc

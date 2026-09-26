@@ -328,6 +328,7 @@ def serve(
     items: Path | None = None,
     index: Path | None = None,
     port: int = 8765,
+    host: str = "127.0.0.1",
     matcher=None,
     calibrator=None,
     refuser=None,
@@ -347,13 +348,16 @@ def serve(
                     meta[r["product_id"]] = r
         _STATE["meta"] = meta
 
-    srv = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    # Loopback by default: this serves local files and runs a model, and there is
+    # no auth. Containers must pass host="0.0.0.0" explicitly to be reachable.
+    srv = ThreadingHTTPServer((host, port), Handler)
     n = len(_photos())
     done = sum(1 for p in _photos() if p["labelled"])
     print(f"\n  labelling {n} photos in {photos}  ({done} already labelled)")
     print(f"  writing   {manifest}")
     print(f"  matcher   {'on -- candidates suggested per photo' if matcher else 'off'}")
-    print(f"\n  open http://127.0.0.1:{port}{landing}    (ctrl-c to stop)\n")
+    shown = "127.0.0.1" if host in ("0.0.0.0", "") else host
+    print(f"\n  open http://{shown}:{port}{landing}    (ctrl-c to stop)\n")
     try:
         srv.serve_forever()
     except KeyboardInterrupt:
