@@ -32,6 +32,7 @@ from .stats import (auroc, cluster_bootstrap, cooccurrence, dose_response,
 @dataclass
 class PhotoResult:
     photo_id: str
+    filename: str            # kept so the HTML report can show the actual photo
     item_id: int | None
     kind: str
     split: str
@@ -141,7 +142,8 @@ def run_photos(
                 refused, set_size = ps.refused, len(ps.items)
 
         out.append(PhotoResult(
-            photo_id=ph.photo_id, item_id=truth, kind=ph.kind, split=ph.split,
+            photo_id=ph.photo_id, filename=ph.filename, item_id=truth,
+            kind=ph.kind, split=ph.split,
             conditions=list(ph.conditions), top1=top1, top5=top5,
             score=float(res.candidates[0].score) if res.candidates else 0.0,
             correct_sku=bool(truth is not None and top1 == truth),

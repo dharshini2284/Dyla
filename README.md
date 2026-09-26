@@ -65,7 +65,13 @@ vpm eval --index data/index.npz --items data/items.jsonl \
          --testset data/testset_synthetic --out reports/eval
 ```
 
-Every table in `REPORT.md` comes from step 8. Nothing is hand-copied.
+Every table in `REPORT.md` comes from step 10. Nothing is hand-copied.
+
+`vpm eval` also writes **`reports/eval/errors.html`** — a self-contained page
+showing every failure with the query, the answer returned and the answer
+expected, side by side, plus the per-condition and marginal-effect tables. It is
+the one thing a results table cannot do: show *why* a case was hard. Thumbnails
+are embedded, so the file travels as a single artefact.
 
 ### Part B — the hand-shot test set
 
@@ -85,10 +91,24 @@ That writes `data/shotlist.csv` (candidate SKUs with their colourway variants, s
 you can pick the right one) and `data/shot_plan.md` (which conditions to induce
 per shoe, and why half the plan is deliberately single-condition).
 
-Label into `manifest.csv` using the schema in `src/vpm/eval/manifest.py`. The
-validator rejects unknown conditions, unknown item ids, duplicate photo ids and
-conditions on clean controls; `check_split_disjoint` fails the run if any *item*
-appears in both dev and test.
+Then label them with the built-in tool rather than by hand in a spreadsheet:
+
+```bash
+vpm label --photos data/testset/photos --manifest data/testset/manifest.csv
+```
+
+It opens a local page at `127.0.0.1:8765` that runs the matcher on each photo and
+offers its top candidates with thumbnails, so the common case is **confirming a
+suggestion rather than typing an id**. Conditions are checkboxes drawn from the
+one vocabulary in `src/vpm/eval/manifest.py`, and every row is validated before it
+reaches the CSV. Keyboard-driven — `q`–`y` pick a match, `1`–`9` toggle
+conditions, `Enter` saves and advances.
+
+Why it exists: the two mistakes that are expensive here are assigning the wrong
+catalogue id (which silently turns an in-catalogue photo into an out-of-catalogue
+one — the exact bug that cost this project two evaluation runs) and drifting
+condition vocabulary. Both are unrecoverable once 130 photos are shot, and both
+are structurally impossible in this tool. Stdlib only — no web stack to install.
 
 ### Everything at once
 

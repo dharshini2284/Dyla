@@ -252,3 +252,72 @@ def test_in_catalogue_items_must_be_indexed():
     check_items_indexed([photos[0], photos[2]], {111})   # fine
     with pytest.raises(TestSetError, match="NOT in the"):
         check_items_indexed(photos, {111})
+
+
+# ---------- labelling tool ----------
+
+def test_labeller_rejects_the_mistakes_that_corrupt_evaluation():
+    """These checks are why the tool exists, so they test the real validator."""
+    from vpm.studio.server import validate_row
+
+    ok = {"photo_id": "p1", "filename": "a.jpg", "kind": "hard", "split": "test",
+          "item_id": "123", "conditions": "low_light"}
+    assert validate_row(ok) is None
+
+    assert "unknown conditions" in validate_row({**ok, "conditions": "lowlight"})
+    assert "clean controls" in validate_row({**ok, "kind": "clean"})
+    assert "empty item_id" in validate_row(
+        {**ok, "kind": "out_of_catalogue", "conditions": ""})
+    assert "integer" in validate_row({**ok, "item_id": ""})
+    assert "missing" in validate_row({"kind": "hard", "split": "test"})
+    assert "split must be" in validate_row({**ok, "split": "prod"})
+    assert "sku_confidence" in validate_row({**ok, "sku_confidence": "probably"})
+
+
+def test_labeller_only_serves_from_its_configured_roots(tmp_path):
+    """Path traversal guard -- the tool serves local files over HTTP."""
+    from vpm.studio.server import is_servable
+
+    root = tmp_path / "photos"
+    root.mkdir()
+    inside = root / "a.jpg"
+    inside.write_bytes(b"x")
+    outside = tmp_path / "secret.txt"
+    outside.write_bytes(b"x")
+
+    assert is_servable(inside, [root])
+    assert not is_servable(outside, [root])
+    assert not is_servable(root / ".." / "secret.txt", [root])
+    assert not is_servable(root / "missing.jpg", [root])
+    assert not is_servable(root, [root])          # a directory is not servable
+
+
+# ---------- style clustering ----------
+
+def test_name_key_links_colourway_siblings_the_colour_graph_misses():
+    """The 4.5 bug: vendor colour metadata is incomplete, names close the gap."""
+    from vpm.catalogue.clusters import model_key
+
+    a = model_key("Sparx", "Sparx Men Charcoal Mesh Running Shoes")
+    b = model_key("Sparx", "Sparx Men Navy Blue Mesh Running Shoes")
+    assert a == b
+    c = model_key("Sparx", "Sparx Men Mesh Walking Shoes")
+    assert a != c
+
+
+def test_style_clusters_merge_via_name_key(tmp_path):
+    import json as _json
+    items = tmp_path / "items.jsonl"
+    items.write_text("\n".join(_json.dumps(r) for r in [
+        {"product_id": 1, "brand": "Sparx", "name": "Sparx Men Charcoal Mesh Running Shoes",
+         "colour_variants": []},
+        {"product_id": 2, "brand": "Sparx", "name": "Sparx Men Navy Blue Mesh Running Shoes",
+         "colour_variants": []},
+        {"product_id": 3, "brand": "Nike", "name": "Nike Men Black Revolution", "colour_variants": []},
+    ]))
+    from vpm.catalogue.clusters import style_clusters
+    without = style_clusters(items, use_name_key=False)
+    with_key = style_clusters(items, use_name_key=True)
+    assert without[1] != without[2]          # the bug
+    assert with_key[1] == with_key[2]        # the fix
+    assert with_key[3] != with_key[1]        # and it does not over-merge

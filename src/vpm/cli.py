@@ -74,8 +74,37 @@ def _eval(args):
 
     report = evaluate(results, split=args.split)
     save(report, results, Path(args.out))
+
+    if not args.no_html:
+        from dataclasses import asdict as _asdict
+        from .eval.report_html import build as build_html
+        meta_raw = {}
+        if args.items and Path(args.items).exists():
+            with open(args.items, encoding="utf-8") as fh:
+                for line in fh:
+                    if line.strip():
+                        _r = json.loads(line)
+                        meta_raw[_r["product_id"]] = _r
+        html = build_html(report, [_asdict(r) for r in results], root,
+                          Path(args.images), meta_raw, Path(args.out) / "errors.html")
+        print(f"wrote {html} ({html.stat().st_size // 1024} KB, self-contained)")
     print("\n" + to_markdown(report))
     print(f"\nwrote {args.out}/report.md, report.json, per_photo.jsonl")
+
+
+def _label(args):
+    """Serve the local labelling tool."""
+    import warnings
+    warnings.filterwarnings("ignore")
+    from .studio.server import serve
+
+    matcher = None
+    if not args.no_matcher and Path(args.index).exists():
+        print("loading matcher for candidate suggestions ...")
+        matcher, _ce = _load_matcher(args)
+    serve(photos=Path(args.photos), manifest=Path(args.manifest),
+          images=Path(args.images), items=Path(args.items) if args.items else None,
+          index=Path(args.index), port=args.port, matcher=matcher)
 
 
 def _build_index(args):
@@ -219,6 +248,21 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="vpm", description="Visual product matcher")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
+    lb = sub.add_parser("label", help="local tool for labelling the Part B photos")
+    lb.add_argument("--photos", default="data/testset/photos",
+                    help="directory of phone photographs to label")
+    lb.add_argument("--manifest", default="data/testset/manifest.csv")
+    lb.add_argument("--images", default="data/images")
+    lb.add_argument("--items", default="data/items.jsonl")
+    lb.add_argument("--index", default="data/index.npz")
+    lb.add_argument("--port", type=int, default=8765)
+    lb.add_argument("--cap-views", type=int, default=4)
+    lb.add_argument("--no-localise", action="store_true")
+    lb.add_argument("--no-tta", action="store_true")
+    lb.add_argument("--no-matcher", action="store_true",
+                    help="skip candidate suggestions (faster start)")
+    lb.set_defaults(func=_label)
+
     sc = sub.add_parser("scrape", help="build the catalogue from Myntra's public sitemaps")
     sc.add_argument("stage", choices=["sitemaps", "products", "images"])
     sc.add_argument("--out", default="data/refs_footwear.jsonl")
@@ -244,6 +288,8 @@ def main() -> None:
     e.add_argument("--no-tta", action="store_true")
     e.add_argument("--calibrator", default="data/calibrator")
     e.add_argument("--distractors", default="data/distractors.npz")
+    e.add_argument("--images", default="data/images")
+    e.add_argument("--no-html", action="store_true", help="skip the HTML error report")
     e.add_argument("--out", default="reports/eval")
     e.set_defaults(func=_eval)
 

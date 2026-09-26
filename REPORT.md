@@ -676,7 +676,35 @@ which point every embedding *does* have to be recomputed.
    projection head. Both were planned; both were cut to keep the error analysis
    deep rather than the feature list long, which is what the brief asks for.
 
-## 11. What I would do next, in order
+## 11. Two things built that the brief did not ask for
+
+Both exist because of something measured, not because a UI seemed nice.
+
+**A labelling tool (`vpm label`).** The engineering bottleneck in this project is
+not the matcher, it is getting 130 photographs labelled without introducing the
+errors that quietly corrupt every downstream number. Two mistakes are expensive
+and easy to make in a spreadsheet: assigning the wrong catalogue id — which
+silently converts an in-catalogue photo into an out-of-catalogue one, the exact
+bug that cost this project two evaluation runs (§4.4) — and drifting condition
+vocabulary. The tool makes both structurally impossible: it runs the matcher on
+each photo and offers ranked candidates with thumbnails so ids are *confirmed*
+rather than typed, and conditions are checkboxes bound to the single vocabulary
+in `eval/manifest.py`. Stdlib only; a reviewer should not need a web stack to
+label photographs.
+
+**A visual error report (`reports/eval/errors.html`).** `report.md` already has
+every number. This shows each failure as query / returned / correct, side by
+side, with its auto-assigned error class and induced conditions. It is the one
+thing a table cannot do — a reader can see that a `silhouette_confusion` really
+is two shoes of the same shape, rather than taking the classifier's word for it.
+Self-contained, thumbnails embedded.
+
+Both are small, and neither is a demo. A generic "upload a photo and see results"
+page was the obvious thing to build and is the least useful, because it
+demonstrates the part that already works instead of the part that is slow or
+hard to verify.
+
+## 12. What I would do next, in order
 
 1. Shoot the 130 + 30 photographs, lock the split, and measure the
    synthetic→real calibration gap. Everything else is downstream of this.
