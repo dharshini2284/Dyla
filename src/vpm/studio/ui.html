@@ -1,173 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Matcher</title>
-<style>
-:root{--bg:#fbfbfa;--panel:#fff;--line:#e4e2dd;--ink:#1a1917;--muted:#6b6862;
---accent:#3b5bdb;--soft:#eef1fd;--ok:#2f7a4d;--okbg:#e8f4ed;--bad:#b3261e;--badbg:#fcecea;
---warn:#b4531a;--r:12px}
-:root:not([data-theme="light"]){@media(prefers-color-scheme:dark){
---bg:#17171a;--panel:#1f1f23;--line:#33333a;--ink:#ececef;--muted:#9a9aa3;
---accent:#7d95f5;--soft:#23263a;--ok:#6cc48d;--okbg:#1d3328;--bad:#e5766c;--badbg:#38211f;
---warn:#e0925a}}
-:root[data-theme="dark"]{--bg:#17171a;--panel:#1f1f23;--line:#33333a;--ink:#ececef;
---muted:#9a9aa3;--accent:#7d95f5;--soft:#23263a;--ok:#6cc48d;--okbg:#1d3328;--bad:#e5766c;
---badbg:#38211f;--warn:#e0925a}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-.page{max-width:1120px;margin:0 auto;padding:28px 20px 70px}
-header{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
-h1{font-size:21px;margin:0;letter-spacing:-.02em}
-.sub{color:var(--muted);font-size:13px}
-a.nav{color:var(--accent);font-size:13px;text-decoration:none;margin-left:auto}
-.drop{margin:20px 0;border:2px dashed var(--line);border-radius:var(--r);padding:34px 20px;
-text-align:center;background:var(--panel);cursor:pointer;transition:.15s}
-.drop:hover,.drop.over{border-color:var(--accent);background:var(--soft)}
-.drop h3{margin:0 0 4px;font-size:15px} .drop p{margin:0;color:var(--muted);font-size:13px}
-.cols{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:22px;align-items:start}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px}
-.card img{width:100%;border-radius:8px;display:block}
-h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
-margin:0 0 10px;font-weight:650}
-.verdict{border-radius:var(--r);padding:14px 16px;margin-bottom:14px;border:1px solid}
-.verdict.ok{background:var(--okbg);border-color:var(--ok)}
-.verdict.no{background:var(--badbg);border-color:var(--bad)}
-.verdict .big{font-size:17px;font-weight:700;letter-spacing:-.01em}
-.verdict.ok .big{color:var(--ok)} .verdict.no .big{color:var(--bad)}
-.verdict .why{font-size:13px;color:var(--muted);margin-top:5px}
-.rows{display:flex;flex-direction:column;gap:8px}
-.row{display:flex;gap:11px;align-items:center;padding:9px;border:1px solid var(--line);
-border-radius:9px;background:var(--panel)}
-.row.top{border-color:var(--accent);background:var(--soft)}
-.row img{width:54px;height:54px;object-fit:cover;border-radius:6px;background:var(--line);flex:none}
-.row .t{flex:1;min-width:0}
-.row .nm{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .id{font-size:11px;color:var(--muted)}
-.row .sc{font-variant-numeric:tabular-nums;font-weight:650;font-size:14px}
-.rank{width:20px;text-align:center;color:var(--muted);font-size:12px;
-font-variant-numeric:tabular-nums;flex:none}
-.meter{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:4px}
-.meter i{display:block;height:100%;background:var(--accent)}
-.lat{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-top:14px}
-.lat div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
-.lat .k{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.lat .v{font-size:16px;font-weight:650;font-variant-numeric:tabular-nums}
-.note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);
-border-top-color:var(--accent);border-radius:99px;animation:s .7s linear infinite;
-vertical-align:-2px;margin-right:7px}
-@keyframes s{to{transform:rotate(360deg)}}
-.err{color:var(--bad);font-size:13px}
-input[type=file]{display:none}
-@media(max-width:820px){.cols{grid-template-columns:1fr}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matcher</title>
+  <style>
+    :root {
+      --bg: #fbfbfa;
+      --panel: #fff;
+      --line: #e4e2dd;
+      --ink: #1a1917;
+      --muted: #6b6862;
+      --accent: #3b5bdb;
+      --soft: #eef1fd;
+      --ok: #2f7a4d;
+      --okbg: #e8f4ed;
+      --bad: #b3261e;
+      --badbg: #fcecea;
+      --warn: #b4531a;
+      --r: 12px
+    }
+
+    :root:not([data-theme="light"]) {
+      @media(prefers-color-scheme:dark) {
+        --bg: #17171a;
+        --panel: #1f1f23;
+        --line: #33333a;
+        --ink: #ececef;
+        --muted: #9a9aa3;
+        --accent: #7d95f5;
+        --soft: #23263a;
+        --ok: #6cc48d;
+        --okbg: #1d3328;
+        --bad: #e5766c;
+        --badbg: #38211f;
+        --warn: #e0925a
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #17171a;
+      --panel: #1f1f23;
+      --line: #33333a;
+      --ink: #ececef;
+      --muted: #9a9aa3;
+      --accent: #7d95f5;
+      --soft: #23263a;
+      --ok: #6cc48d;
+      --okbg: #1d3328;
+      --bad: #e5766c;
+      --badbg: #38211f;
+      --warn: #e0925a
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 70px
+    }
+
+    header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 6px;
+      flex-wrap: wrap
+    }
+
+    h1 {
+      font-size: 21px;
+      margin: 0;
+      letter-spacing: -.02em
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    a.nav {
+      color: var(--accent);
+      font-size: 13px;
+      text-decoration: none;
+      margin-left: auto
+    }
+
+    .drop {
+      margin: 20px 0;
+      border: 2px dashed var(--line);
+      border-radius: var(--r);
+      padding: 34px 20px;
+      text-align: center;
+      background: var(--panel);
+      cursor: pointer;
+      transition: .15s
+    }
+
+    .drop:hover,
+    .drop.over {
+      border-color: var(--accent);
+      background: var(--soft)
+    }
+
+    .drop h3 {
+      margin: 0 0 4px;
+      font-size: 15px
+    }
+
+    .drop p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .cols {
+      display: grid;
+      grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+      gap: 22px;
+      align-items: start
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 14px
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      display: block
+    }
+
+    h2 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      margin: 0 0 10px;
+      font-weight: 650
+    }
+
+    .verdict {
+      border-radius: var(--r);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1px solid
+    }
+
+    .verdict.ok {
+      background: var(--okbg);
+      border-color: var(--ok)
+    }
+
+    .verdict.no {
+      background: var(--badbg);
+      border-color: var(--bad)
+    }
+
+    .verdict .big {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.01em
+    }
+
+    .verdict.ok .big {
+      color: var(--ok)
+    }
+
+    .verdict.no .big {
+      color: var(--bad)
+    }
+
+    .verdict .why {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 5px
+    }
+
+    .rows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .row {
+      display: flex;
+      gap: 11px;
+      align-items: center;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel)
+    }
+
+    .row.top {
+      border-color: var(--accent);
+      background: var(--soft)
+    }
+
+    .row img {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: var(--line);
+      flex: none
+    }
+
+    .row .t {
+      flex: 1;
+      min-width: 0
+    }
+
+    .row .nm {
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .row .id {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .row .sc {
+      font-variant-numeric: tabular-nums;
+      font-weight: 650;
+      font-size: 14px
+    }
+
+    .rank {
+      width: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      flex: none
+    }
+
+    .meter {
+      height: 5px;
+      background: var(--line);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 4px
+    }
+
+    .meter i {
+      display: block;
+      height: 100%;
+      background: var(--accent)
+    }
+
+    .lat {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+      gap: 8px;
+      margin-top: 14px
+    }
+
+    .lat div {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 10px
+    }
+
+    .lat .k {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted)
+    }
+
+    .lat .v {
+      font-size: 16px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums
+    }
+
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.5
+    }
+
+    .spin {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--line);
+      border-top-color: var(--accent);
+      border-radius: 99px;
+      animation: s .7s linear infinite;
+      vertical-align: -2px;
+      margin-right: 7px
+    }
+
+    @keyframes s {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .err {
+      color: var(--bad);
+      font-size: 13px
+    }
+
+    input[type=file] {
+      display: none
+    }
+
+    @media(max-width:820px) {
+      .cols {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
 </head>
-<body><div class="page">
 
-<header>
-  <h1>Visual product matcher</h1>
-  <span class="sub" id="cat"></span>
-  <a class="nav" href="/label">labelling tool →</a>
-</header>
+<body>
+  <div class="page">
 
-<div class="drop" id="drop">
-  <h3>Drop a photo, or click to choose</h3>
-  <p>a shoe that is in the catalogue, or one that is not</p>
-  <input type="file" id="file" accept="image/*">
-</div>
+    <header>
+      <h1>Visual product matcher</h1>
+      <span class="sub" id="cat"></span>
+      <a class="nav" href="/label">labelling tool →</a>
+    </header>
 
-<div id="out"></div>
+    <div class="drop" id="drop">
+      <h3>Drop a photo, or click to choose</h3>
+      <p>a shoe that is in the catalogue, or one that is not</p>
+      <input type="file" id="file" accept="image/*">
+    </div>
 
-<script>
-const $ = s => document.querySelector(s);
-const drop = $('#drop'), file = $('#file');
+    <div id="out"></div>
 
-drop.onclick = () => file.click();
-drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
-drop.ondragleave = () => drop.classList.remove('over');
-drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over');
-  if (e.dataTransfer.files[0]) go(e.dataTransfer.files[0]); };
-file.onchange = () => file.files[0] && go(file.files[0]);
+    <script>
+      const $ = s => document.querySelector(s);
+      const drop = $('#drop'), file = $('#file');
 
-function go(f){
-  const fr = new FileReader();
-  fr.onload = async () => {
-    $('#out').innerHTML = '<div class="card"><span class="spin"></span>matching…</div>';
-    try{
-      const r = await fetch('/api/analyse', {method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({image: fr.result})});
-      const d = await r.json();
-      d.error ? ($('#out').innerHTML = '<div class="card err">'+d.error+'</div>')
+      drop.onclick = () => file.click();
+      drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+      drop.ondragleave = () => drop.classList.remove('over');
+      drop.ondrop = e => {
+        e.preventDefault(); drop.classList.remove('over');
+        if (e.dataTransfer.files[0]) go(e.dataTransfer.files[0]);
+      };
+      file.onchange = () => file.files[0] && go(file.files[0]);
+
+      function go(f) {
+        const fr = new FileReader();
+        fr.onload = async () => {
+          $('#out').innerHTML = '<div class="card"><span class="spin"></span>matching…</div>';
+          try {
+            const r = await fetch('/api/analyse', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: fr.result })
+            });
+            const d = await r.json();
+            d.error ? ($('#out').innerHTML = '<div class="card err">' + d.error + '</div>')
               : render(d, fr.result);
-    }catch(e){ $('#out').innerHTML = '<div class="card err">'+e+'</div>'; }
-  };
-  fr.readAsDataURL(f);
-}
+          } catch (e) { $('#out').innerHTML = '<div class="card err">' + e + '</div>'; }
+        };
+        fr.readAsDataURL(f);
+      }
 
-function render(d, dataUrl){
-  $('#cat').textContent = d.catalogue.items.toLocaleString() + ' items · '
-    + d.catalogue.views.toLocaleString() + ' views';
+      function render(d, dataUrl) {
+        $('#cat').textContent = d.catalogue.items.toLocaleString() + ' items · '
+          + d.catalogue.views.toLocaleString() + ' views';
 
-  const refused = d.refused === true;
-  const p = d.p_match;
-  const dm = d.distractor_max, top = d.candidates[0];
+        const refused = d.refused === true;
+        const p = d.p_match;
+        const dm = d.distractor_max, top = d.candidates[0];
 
-  let why = '';
-  if (dm !== undefined && top){
-    why = refused
-      ? `a bank of shoes known to be absent from the catalogue matched this photo at
+        let why = '';
+        if (dm !== undefined && top) {
+          why = refused
+            ? `a bank of shoes known to be absent from the catalogue matched this photo at
          <b>${dm.toFixed(3)}</b>, against the catalogue's best guess at
          <b>${top.score.toFixed(3)}</b> — the catalogue does not explain it better`
-      : `catalogue best <b>${top.score.toFixed(3)}</b> vs best known-absent shoe
+            : `catalogue best <b>${top.score.toFixed(3)}</b> vs best known-absent shoe
          <b>${dm.toFixed(3)}</b>`;
-  }
+        }
 
-  const verdict = `
-    <div class="verdict ${refused?'no':'ok'}">
+        const verdict = `
+    <div class="verdict ${refused ? 'no' : 'ok'}">
       <div class="big">${refused ? 'NO MATCH — not in the catalogue'
-        : (top ? top.brand + ' — ' + top.name : 'match')}</div>
+            : (top ? top.brand + ' — ' + top.name : 'match')}</div>
       <div class="why">
-        ${p!==undefined ? `confidence <b>${p.toFixed(3)}</b>` : ''}
-        ${d.alpha!==undefined ? ` · conformal set of <b>${(d.set_items||[]).length}</b>
+        ${p !== undefined ? `confidence <b>${p.toFixed(3)}</b>` : ''}
+        ${d.alpha !== undefined ? ` · conformal set of <b>${(d.set_items || []).length}</b>
           at α=${d.alpha}` : ''}
-        ${why ? '<br>'+why : ''}
+        ${why ? '<br>' + why : ''}
       </div>
     </div>`;
 
-  const rows = d.candidates.map((c,i)=>`
-    <div class="row ${i===0?'top':''}">
-      <span class="rank">${i+1}</span>
-      ${c.thumb?`<img src="/img?p=${encodeURIComponent(c.thumb)}" alt="">`:'<span class="rank">?</span>'}
+        const rows = d.candidates.map((c, i) => `
+    <div class="row ${i === 0 ? 'top' : ''}">
+      <span class="rank">${i + 1}</span>
+      ${c.thumb ? `<img src="/img?p=${encodeURIComponent(c.thumb)}" alt="">` : '<span class="rank">?</span>'}
       <span class="t">
         <span class="nm">${c.brand} — ${c.name}</span>
-        <span class="id">${c.item_id}${c.colour?' · '+c.colour:''}</span>
-        <div class="meter"><i style="width:${Math.max(0,Math.min(1,c.score))*100}%"></i></div>
+        <span class="id">${c.item_id}${c.colour ? ' · ' + c.colour : ''}</span>
+        <div class="meter"><i style="width:${Math.max(0, Math.min(1, c.score)) * 100}%"></i></div>
       </span>
       <span class="sc">${c.score.toFixed(3)}</span>
     </div>`).join('');
 
-  const t = d.timings || {};
-  const lat = Object.entries(t).filter(([k])=>k!=='total').map(([k,v])=>
-    `<div><div class="k">${k.replace(/_/g,' ')}</div><div class="v">${v.toFixed(1)}<span
+        const t = d.timings || {};
+        const lat = Object.entries(t).filter(([k]) => k !== 'total').map(([k, v]) =>
+          `<div><div class="k">${k.replace(/_/g, ' ')}</div><div class="v">${v.toFixed(1)}<span
       style="font-size:11px;color:var(--muted)"> ms</span></div></div>`).join('')
-    + `<div><div class="k">total</div><div class="v">${(t.total||d.total_ms).toFixed(1)}<span
+          + `<div><div class="k">total</div><div class="v">${(t.total || d.total_ms).toFixed(1)}<span
       style="font-size:11px;color:var(--muted)"> ms</span></div></div>`;
 
-  $('#out').innerHTML = `
+        $('#out').innerHTML = `
     <div class="cols">
       <div>
         <div class="card"><h2>query</h2><img src="${dataUrl}" alt=""></div>
-        ${d.overlay?`<div class="card" style="margin-top:14px">
+        ${d.overlay ? `<div class="card" style="margin-top:14px">
           <h2>patch-norm saliency</h2><img src="${d.overlay}" alt="">
           <div class="note">Warm = high feature norm. The box is what the localiser
             would crop to. Localisation is <b>off by default</b> — measured neutral on
             accuracy and roughly double the latency (REPORT.md §7) — so this is shown
             as a diagnostic, not as part of the pipeline.</div>
-        </div>`:''}
+        </div>`: ''}
       </div>
       <div>
         ${verdict}
@@ -179,6 +455,9 @@ function render(d, dataUrl){
           here. The backbone forward pass is the budget.</div>
       </div>
     </div>`;
-}
-</script>
-</div></body></html>
+      }
+    </script>
+  </div>
+</body>
+
+</html>

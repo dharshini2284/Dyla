@@ -1,267 +1,617 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Label</title>
-<style>
-:root{
-  --bg:#fbfbfa; --panel:#fff; --line:#e4e2dd; --ink:#1a1917; --muted:#6b6862;
-  --accent:#3b5bdb; --accent-soft:#eef1fd; --ok:#2f7a4d; --warn:#b4531a; --danger:#b3261e;
-  --radius:10px;
-}
-:root:not([data-theme="light"]){ @media (prefers-color-scheme:dark){
-  --bg:#17171a; --panel:#1f1f23; --line:#33333a; --ink:#ececef; --muted:#9a9aa3;
-  --accent:#7d95f5; --accent-soft:#23263a; --ok:#6cc48d; --warn:#e0925a; --danger:#e5766c;
-}}
-:root[data-theme="dark"]{
-  --bg:#17171a; --panel:#1f1f23; --line:#33333a; --ink:#ececef; --muted:#9a9aa3;
-  --accent:#7d95f5; --accent-soft:#23263a; --ok:#6cc48d; --warn:#e0925a; --danger:#e5766c;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-header{display:flex;align-items:center;gap:16px;padding:12px 16px;
-  border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
-h1{font-size:15px;margin:0;font-weight:650;letter-spacing:-.01em}
-.progress{flex:1;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
-.bar{flex:1;max-width:280px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
-.wrap{display:grid;grid-template-columns:230px 1fr;gap:0;min-height:calc(100vh - 53px)}
-aside{border-right:1px solid var(--line);background:var(--panel);overflow-y:auto;
-  max-height:calc(100vh - 53px)}
-.item{display:flex;gap:9px;align-items:center;padding:7px 12px;cursor:pointer;
-  border-bottom:1px solid var(--line);font-size:13px}
-.item:hover{background:var(--accent-soft)}
-.item.on{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
-.item img{width:34px;height:34px;object-fit:cover;border-radius:5px;background:var(--line);flex:none}
-.item .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.dot{width:7px;height:7px;border-radius:99px;background:var(--line);flex:none}
-.dot.done{background:var(--ok)}
-main{padding:18px 20px 60px;max-width:1100px}
-.shot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
-.photo{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-  padding:10px;text-align:center}
-.photo img{max-width:100%;max-height:52vh;border-radius:6px}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
-  margin:0 0 9px;font-weight:600}
-.cands{display:flex;flex-direction:column;gap:6px}
-.cand{display:flex;gap:10px;align-items:center;padding:7px;border:1px solid var(--line);
-  border-radius:8px;cursor:pointer;background:var(--panel);text-align:left}
-.cand:hover{border-color:var(--accent)}
-.cand.on{border-color:var(--accent);background:var(--accent-soft)}
-.cand img{width:46px;height:46px;object-fit:cover;border-radius:5px;background:var(--line);flex:none}
-.cand .t{flex:1;min-width:0}
-.cand .nm{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cand .sub{font-size:11px;color:var(--muted)}
-.sc{font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted)}
-.kbd{display:inline-block;min-width:16px;text-align:center;padding:1px 4px;border:1px solid var(--line);
-  border-bottom-width:2px;border-radius:4px;font-size:11px;color:var(--muted);
-  font-family:ui-monospace,monospace}
-fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin:16px 0 0;
-  background:var(--panel)}
-legend{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 5px}
-.conds{display:flex;flex-wrap:wrap;gap:7px}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--line);
-  border-radius:99px;cursor:pointer;font-size:13px;user-select:none;background:var(--bg)}
-.chip:hover{border-color:var(--accent)}
-.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.chip.on .kbd{border-color:rgba(255,255,255,.5);color:#fff}
-.row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:12px}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
-select,input[type=text]{padding:7px 9px;border:1px solid var(--line);border-radius:7px;
-  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
-button{padding:9px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);
-  color:#fff;font:inherit;font-weight:600;cursor:pointer;font-size:14px}
-button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-button:disabled{opacity:.45;cursor:not-allowed}
-.bar2{position:fixed;bottom:0;left:230px;right:0;padding:11px 20px;background:var(--panel);
-  border-top:1px solid var(--line);display:flex;gap:12px;align-items:center}
-.msg{font-size:13px}
-.msg.err{color:var(--danger)} .msg.ok{color:var(--ok)}
-.hint{color:var(--muted);font-size:12px;margin-left:auto}
-.empty{padding:40px;color:var(--muted);text-align:center}
-@media(max-width:860px){
-  .wrap{grid-template-columns:1fr} aside{max-height:150px} .shot{grid-template-columns:1fr}
-  .bar2{left:0}
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Label</title>
+  <style>
+    :root {
+      --bg: #fbfbfa;
+      --panel: #fff;
+      --line: #e4e2dd;
+      --ink: #1a1917;
+      --muted: #6b6862;
+      --accent: #3b5bdb;
+      --accent-soft: #eef1fd;
+      --ok: #2f7a4d;
+      --warn: #b4531a;
+      --danger: #b3261e;
+      --radius: 10px;
+    }
+
+    :root:not([data-theme="light"]) {
+      @media (prefers-color-scheme:dark) {
+        --bg: #17171a;
+        --panel: #1f1f23;
+        --line: #33333a;
+        --ink: #ececef;
+        --muted: #9a9aa3;
+        --accent: #7d95f5;
+        --accent-soft: #23263a;
+        --ok: #6cc48d;
+        --warn: #e0925a;
+        --danger: #e5766c;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #17171a;
+      --panel: #1f1f23;
+      --line: #33333a;
+      --ink: #ececef;
+      --muted: #9a9aa3;
+      --accent: #7d95f5;
+      --accent-soft: #23263a;
+      --ok: #6cc48d;
+      --warn: #e0925a;
+      --danger: #e5766c;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      position: sticky;
+      top: 0;
+      z-index: 5
+    }
+
+    h1 {
+      font-size: 15px;
+      margin: 0;
+      font-weight: 650;
+      letter-spacing: -.01em
+    }
+
+    .progress {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .bar {
+      flex: 1;
+      max-width: 280px;
+      height: 6px;
+      background: var(--line);
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      transition: width .25s
+    }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 53px)
+    }
+
+    aside {
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+      overflow-y: auto;
+      max-height: calc(100vh - 53px)
+    }
+
+    .item {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      padding: 7px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px
+    }
+
+    .item:hover {
+      background: var(--accent-soft)
+    }
+
+    .item.on {
+      background: var(--accent-soft);
+      box-shadow: inset 3px 0 0 var(--accent)
+    }
+
+    .item img {
+      width: 34px;
+      height: 34px;
+      object-fit: cover;
+      border-radius: 5px;
+      background: var(--line);
+      flex: none
+    }
+
+    .item .fn {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 99px;
+      background: var(--line);
+      flex: none
+    }
+
+    .dot.done {
+      background: var(--ok)
+    }
+
+    main {
+      padding: 18px 20px 60px;
+      max-width: 1100px
+    }
+
+    .shot {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start
+    }
+
+    .photo {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      text-align: center
+    }
+
+    .photo img {
+      max-width: 100%;
+      max-height: 52vh;
+      border-radius: 6px
+    }
+
+    h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin: 0 0 9px;
+      font-weight: 600
+    }
+
+    .cands {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .cand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 7px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--panel);
+      text-align: left
+    }
+
+    .cand:hover {
+      border-color: var(--accent)
+    }
+
+    .cand.on {
+      border-color: var(--accent);
+      background: var(--accent-soft)
+    }
+
+    .cand img {
+      width: 46px;
+      height: 46px;
+      object-fit: cover;
+      border-radius: 5px;
+      background: var(--line);
+      flex: none
+    }
+
+    .cand .t {
+      flex: 1;
+      min-width: 0
+    }
+
+    .cand .nm {
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .cand .sub {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .sc {
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .kbd {
+      display: inline-block;
+      min-width: 16px;
+      text-align: center;
+      padding: 1px 4px;
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: ui-monospace, monospace
+    }
+
+    fieldset {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin: 16px 0 0;
+      background: var(--panel)
+    }
+
+    legend {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      padding: 0 5px
+    }
+
+    .conds {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: 13px;
+      user-select: none;
+      background: var(--bg)
+    }
+
+    .chip:hover {
+      border-color: var(--accent)
+    }
+
+    .chip.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff
+    }
+
+    .chip.on .kbd {
+      border-color: rgba(255, 255, 255, .5);
+      color: #fff
+    }
+
+    .row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-top: 12px
+    }
+
+    label.f {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    select,
+    input[type=text] {
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--bg);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px
+    }
+
+    button {
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--line)
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed
+    }
+
+    .bar2 {
+      position: fixed;
+      bottom: 0;
+      left: 230px;
+      right: 0;
+      padding: 11px 20px;
+      background: var(--panel);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .msg {
+      font-size: 13px
+    }
+
+    .msg.err {
+      color: var(--danger)
+    }
+
+    .msg.ok {
+      color: var(--ok)
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: auto
+    }
+
+    .empty {
+      padding: 40px;
+      color: var(--muted);
+      text-align: center
+    }
+
+    @media(max-width:860px) {
+      .wrap {
+        grid-template-columns: 1fr
+      }
+
+      aside {
+        max-height: 150px
+      }
+
+      .shot {
+        grid-template-columns: 1fr
+      }
+
+      .bar2 {
+        left: 0
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <h1>Label</h1>
-  <div class="progress">
-    <div class="bar"><i id="pbar" style="width:0%"></i></div>
-    <span id="pnum">0 / 0</span>
+  <header>
+    <h1>Label</h1>
+    <div class="progress">
+      <div class="bar"><i id="pbar" style="width:0%"></i></div>
+      <span id="pnum">0 / 0</span>
+    </div>
+    <span class="hint" id="mpath"></span>
+  </header>
+
+  <div class="wrap">
+    <aside id="list"></aside>
+    <main id="main">
+      <div class="empty">loading…</div>
+    </main>
   </div>
-  <span class="hint" id="mpath"></span>
-</header>
 
-<div class="wrap">
-  <aside id="list"></aside>
-  <main id="main"><div class="empty">loading…</div></main>
-</div>
+  <div class="bar2">
+    <button id="save">Save &amp; next <span class="kbd">↵</span></button>
+    <button class="ghost" id="skip">Skip <span class="kbd">→</span></button>
+    <span class="msg" id="msg"></span>
+    <span class="hint"><span class="kbd">1</span>–<span class="kbd">9</span> conditions ·
+      <span class="kbd">q</span>–<span class="kbd">y</span> pick match · <span class="kbd">c</span> clean ·
+      <span class="kbd">o</span> out-of-catalogue</span>
+  </div>
 
-<div class="bar2">
-  <button id="save">Save &amp; next <span class="kbd">↵</span></button>
-  <button class="ghost" id="skip">Skip <span class="kbd">→</span></button>
-  <span class="msg" id="msg"></span>
-  <span class="hint"><span class="kbd">1</span>–<span class="kbd">9</span> conditions ·
-    <span class="kbd">q</span>–<span class="kbd">y</span> pick match · <span class="kbd">c</span> clean ·
-    <span class="kbd">o</span> out-of-catalogue</span>
-</div>
+  <script>
+    const $ = s => document.querySelector(s);
+    let CFG = null, PHOTOS = [], cur = 0, sel = { conds: new Set(), item: null, cands: [] };
 
-<script>
-const $ = s => document.querySelector(s);
-let CFG = null, PHOTOS = [], cur = 0, sel = {conds:new Set(), item:null, cands:[]};
+    const img = p => '/img?p=' + encodeURIComponent(p);
 
-const img = p => '/img?p=' + encodeURIComponent(p);
+    async function boot() {
+      CFG = await (await fetch('/api/config')).json();
+      $('#mpath').textContent = CFG.manifest;
+      await reload();
+      document.addEventListener('keydown', keys);
+    }
 
-async function boot(){
-  CFG = await (await fetch('/api/config')).json();
-  $('#mpath').textContent = CFG.manifest;
-  await reload();
-  document.addEventListener('keydown', keys);
-}
+    async function reload() {
+      PHOTOS = await (await fetch('/api/photos')).json();
+      drawList(); show(cur);
+    }
 
-async function reload(){
-  PHOTOS = await (await fetch('/api/photos')).json();
-  drawList(); show(cur);
-}
-
-function drawList(){
-  const done = PHOTOS.filter(p=>p.labelled).length;
-  $('#pbar').style.width = (PHOTOS.length ? done/PHOTOS.length*100 : 0) + '%';
-  $('#pnum').textContent = done + ' / ' + PHOTOS.length;
-  $('#list').innerHTML = PHOTOS.map((p,i)=>`
-    <div class="item ${i===cur?'on':''}" data-i="${i}">
-      <span class="dot ${p.labelled?'done':''}"></span>
+    function drawList() {
+      const done = PHOTOS.filter(p => p.labelled).length;
+      $('#pbar').style.width = (PHOTOS.length ? done / PHOTOS.length * 100 : 0) + '%';
+      $('#pnum').textContent = done + ' / ' + PHOTOS.length;
+      $('#list').innerHTML = PHOTOS.map((p, i) => `
+    <div class="item ${i === cur ? 'on' : ''}" data-i="${i}">
+      <span class="dot ${p.labelled ? 'done' : ''}"></span>
       <img loading="lazy" src="${img(p.path)}" alt="">
       <span class="fn">${p.filename}</span>
     </div>`).join('');
-  $('#list').querySelectorAll('.item').forEach(el=>
-    el.onclick = ()=>{ cur = +el.dataset.i; show(cur); });
-}
+      $('#list').querySelectorAll('.item').forEach(el =>
+        el.onclick = () => { cur = +el.dataset.i; show(cur); });
+    }
 
-function show(i){
-  if(!PHOTOS.length){ $('#main').innerHTML='<div class="empty">no photos found</div>'; return; }
-  cur = Math.max(0, Math.min(i, PHOTOS.length-1));
-  const p = PHOTOS[cur], r = p.row || {};
-  sel = {conds:new Set((r.conditions||'').split('|').filter(Boolean)),
-         item: r.item_id || null, cands: []};
+    function show(i) {
+      if (!PHOTOS.length) { $('#main').innerHTML = '<div class="empty">no photos found</div>'; return; }
+      cur = Math.max(0, Math.min(i, PHOTOS.length - 1));
+      const p = PHOTOS[cur], r = p.row || {};
+      sel = {
+        conds: new Set((r.conditions || '').split('|').filter(Boolean)),
+        item: r.item_id || null, cands: []
+      };
 
-  $('#main').innerHTML = `
+      $('#main').innerHTML = `
     <div class="shot">
       <div class="photo"><img src="${img(p.path)}" alt=""></div>
       <div>
-        <h2>Catalogue match ${CFG.has_matcher?'':'— matcher off'}</h2>
-        <div class="cands" id="cands">${CFG.has_matcher?'<div class="empty">matching…</div>':''}</div>
+        <h2>Catalogue match ${CFG.has_matcher ? '' : '— matcher off'}</h2>
+        <div class="cands" id="cands">${CFG.has_matcher ? '<div class="empty">matching…</div>' : ''}</div>
         <div class="row">
           <label class="f">or type an item id
-            <input type="text" id="manual" placeholder="e.g. 11198964" value="${r.item_id||''}">
+            <input type="text" id="manual" placeholder="e.g. 11198964" value="${r.item_id || ''}">
           </label>
         </div>
       </div>
     </div>
 
     <fieldset><legend>Failure conditions</legend>
-      <div class="conds" id="conds">${CFG.conditions.map((c,n)=>`
-        <span class="chip ${sel.conds.has(c)?'on':''}" data-c="${c}">
-          ${n<9?`<span class="kbd">${n+1}</span>`:''}${c}</span>`).join('')}</div>
+      <div class="conds" id="conds">${CFG.conditions.map((c, n) => `
+        <span class="chip ${sel.conds.has(c) ? 'on' : ''}" data-c="${c}">
+          ${n < 9 ? `<span class="kbd">${n + 1}</span>` : ''}${c}</span>`).join('')}</div>
     </fieldset>
 
     <fieldset><legend>Record</legend>
       <div class="row">
-        <label class="f">kind<select id="kind">${CFG.kinds.map(k=>
-          `<option ${(r.kind||'hard')===k?'selected':''}>${k}</option>`).join('')}</select></label>
-        <label class="f">split<select id="split">${CFG.splits.map(k=>
-          `<option ${(r.split||'test')===k?'selected':''}>${k}</option>`).join('')}</select></label>
-        <label class="f">sku confidence<select id="skuc">${CFG.sku_confidence.map(k=>
-          `<option ${(r.sku_confidence||'exact')===k?'selected':''}>${k}</option>`).join('')}</select></label>
+        <label class="f">kind<select id="kind">${CFG.kinds.map(k =>
+        `<option ${(r.kind || 'hard') === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        <label class="f">split<select id="split">${CFG.splits.map(k =>
+          `<option ${(r.split || 'test') === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        <label class="f">sku confidence<select id="skuc">${CFG.sku_confidence.map(k =>
+            `<option ${(r.sku_confidence || 'exact') === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
         <label class="f">occludes logo<select id="logo">
-          <option value="false" ${r.occludes_logo!=='true'?'selected':''}>no</option>
-          <option value="true" ${r.occludes_logo==='true'?'selected':''}>yes</option></select></label>
+          <option value="false" ${r.occludes_logo !== 'true' ? 'selected' : ''}>no</option>
+          <option value="true" ${r.occludes_logo === 'true' ? 'selected' : ''}>yes</option></select></label>
         <label class="f" style="flex:1;min-width:200px">notes
-          <input type="text" id="notes" value="${(r.notes||'').replace(/"/g,'&quot;')}"></label>
+          <input type="text" id="notes" value="${(r.notes || '').replace(/"/g, '&quot;')}"></label>
       </div>
     </fieldset>`;
 
-  $('#conds').querySelectorAll('.chip').forEach(el=>
-    el.onclick = ()=>toggleCond(el.dataset.c));
-  drawList();
-  if(CFG.has_matcher) loadCands(p.filename);
-}
+      $('#conds').querySelectorAll('.chip').forEach(el =>
+        el.onclick = () => toggleCond(el.dataset.c));
+      drawList();
+      if (CFG.has_matcher) loadCands(p.filename);
+    }
 
-async function loadCands(fn){
-  try{
-    const d = await (await fetch('/api/match?filename='+encodeURIComponent(fn))).json();
-    sel.cands = d.candidates || [];
-  }catch(e){ sel.cands = []; }
-  drawCands();
-}
+    async function loadCands(fn) {
+      try {
+        const d = await (await fetch('/api/match?filename=' + encodeURIComponent(fn))).json();
+        sel.cands = d.candidates || [];
+      } catch (e) { sel.cands = []; }
+      drawCands();
+    }
 
-function drawCands(){
-  const keys = 'qwerty';
-  const el = $('#cands'); if(!el) return;
-  if(!sel.cands.length){ el.innerHTML = '<div class="empty">no candidates</div>'; return; }
-  el.innerHTML = sel.cands.map((c,i)=>`
-    <div class="cand ${String(sel.item)===String(c.item_id)?'on':''}" data-id="${c.item_id}">
-      <span class="kbd">${keys[i]||''}</span>
-      ${c.thumb?`<img src="${img(c.thumb)}" alt="">`:'<span class="kbd">?</span>'}
+    function drawCands() {
+      const keys = 'qwerty';
+      const el = $('#cands'); if (!el) return;
+      if (!sel.cands.length) { el.innerHTML = '<div class="empty">no candidates</div>'; return; }
+      el.innerHTML = sel.cands.map((c, i) => `
+    <div class="cand ${String(sel.item) === String(c.item_id) ? 'on' : ''}" data-id="${c.item_id}">
+      <span class="kbd">${keys[i] || ''}</span>
+      ${c.thumb ? `<img src="${img(c.thumb)}" alt="">` : '<span class="kbd">?</span>'}
       <span class="t"><span class="nm">${c.brand} — ${c.name}</span>
-        <span class="sub">${c.item_id}${c.colour?' · '+c.colour:''}</span></span>
+        <span class="sub">${c.item_id}${c.colour ? ' · ' + c.colour : ''}</span></span>
       <span class="sc">${c.score.toFixed(3)}</span>
     </div>`).join('');
-  el.querySelectorAll('.cand').forEach(d=> d.onclick = ()=>pick(d.dataset.id));
-}
+      el.querySelectorAll('.cand').forEach(d => d.onclick = () => pick(d.dataset.id));
+    }
 
-function pick(id){ sel.item = id; $('#manual').value = id; drawCands(); }
-function toggleCond(c){
-  sel.conds.has(c) ? sel.conds.delete(c) : sel.conds.add(c);
-  $('#conds').querySelectorAll('.chip').forEach(el=>
-    el.classList.toggle('on', sel.conds.has(el.dataset.c)));
-}
+    function pick(id) { sel.item = id; $('#manual').value = id; drawCands(); }
+    function toggleCond(c) {
+      sel.conds.has(c) ? sel.conds.delete(c) : sel.conds.add(c);
+      $('#conds').querySelectorAll('.chip').forEach(el =>
+        el.classList.toggle('on', sel.conds.has(el.dataset.c)));
+    }
 
-function keys(e){
-  if(e.target.tagName === 'INPUT') { if(e.key==='Enter') save(); return; }
-  if(e.key==='Enter'){ save(); return; }
-  if(e.key==='ArrowRight'){ show(cur+1); return; }
-  if(e.key==='ArrowLeft'){ show(cur-1); return; }
-  if(e.key>='1' && e.key<='9'){ const c = CFG.conditions[+e.key-1]; if(c) toggleCond(c); return; }
-  const qi = 'qwerty'.indexOf(e.key.toLowerCase());
-  if(qi >= 0 && sel.cands[qi]){ pick(sel.cands[qi].item_id); return; }
-  if(e.key==='c'){ $('#kind').value='clean'; sel.conds.clear();
-    $('#conds').querySelectorAll('.chip').forEach(el=>el.classList.remove('on')); return; }
-  if(e.key==='o'){ $('#kind').value='out_of_catalogue'; return; }
-}
+    function keys(e) {
+      if (e.target.tagName === 'INPUT') { if (e.key === 'Enter') save(); return; }
+      if (e.key === 'Enter') { save(); return; }
+      if (e.key === 'ArrowRight') { show(cur + 1); return; }
+      if (e.key === 'ArrowLeft') { show(cur - 1); return; }
+      if (e.key >= '1' && e.key <= '9') { const c = CFG.conditions[+e.key - 1]; if (c) toggleCond(c); return; }
+      const qi = 'qwerty'.indexOf(e.key.toLowerCase());
+      if (qi >= 0 && sel.cands[qi]) { pick(sel.cands[qi].item_id); return; }
+      if (e.key === 'c') {
+        $('#kind').value = 'clean'; sel.conds.clear();
+        $('#conds').querySelectorAll('.chip').forEach(el => el.classList.remove('on')); return;
+      }
+      if (e.key === 'o') { $('#kind').value = 'out_of_catalogue'; return; }
+    }
 
-async function save(){
-  const p = PHOTOS[cur]; if(!p) return;
-  const kind = $('#kind').value;
-  const row = {
-    photo_id: (p.row && p.row.photo_id) || 'p' + String(cur+1).padStart(4,'0'),
-    filename: p.filename,
-    item_id: kind === 'out_of_catalogue' ? '' : ($('#manual').value || sel.item || ''),
-    kind, split: $('#split').value,
-    conditions: [...sel.conds].join('|'),
-    occludes_logo: $('#logo').value,
-    sku_confidence: $('#skuc').value,
-    notes: $('#notes').value,
-  };
-  const res = await fetch('/api/save', {method:'POST',
-    headers:{'Content-Type':'application/json'}, body: JSON.stringify(row)});
-  const d = await res.json();
-  const m = $('#msg');
-  if(!res.ok){ m.className='msg err'; m.textContent = d.error; return; }
-  m.className='msg ok'; m.textContent = 'saved';
-  setTimeout(()=>m.textContent='', 1200);
-  PHOTOS[cur].labelled = true; PHOTOS[cur].row = row;
-  show(cur+1);
-}
+    async function save() {
+      const p = PHOTOS[cur]; if (!p) return;
+      const kind = $('#kind').value;
+      const row = {
+        photo_id: (p.row && p.row.photo_id) || 'p' + String(cur + 1).padStart(4, '0'),
+        filename: p.filename,
+        item_id: kind === 'out_of_catalogue' ? '' : ($('#manual').value || sel.item || ''),
+        kind, split: $('#split').value,
+        conditions: [...sel.conds].join('|'),
+        occludes_logo: $('#logo').value,
+        sku_confidence: $('#skuc').value,
+        notes: $('#notes').value,
+      };
+      const res = await fetch('/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(row)
+      });
+      const d = await res.json();
+      const m = $('#msg');
+      if (!res.ok) { m.className = 'msg err'; m.textContent = d.error; return; }
+      m.className = 'msg ok'; m.textContent = 'saved';
+      setTimeout(() => m.textContent = '', 1200);
+      PHOTOS[cur].labelled = true; PHOTOS[cur].row = row;
+      show(cur + 1);
+    }
 
-$('#save').onclick = save;
-$('#skip').onclick = ()=>show(cur+1);
-boot();
-</script>
+    $('#save').onclick = save;
+    $('#skip').onclick = () => show(cur + 1);
+    boot();
+  </script>
 </body>
+
 </html>
