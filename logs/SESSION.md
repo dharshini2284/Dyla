@@ -222,6 +222,24 @@ known baseline, and a rank-1 truth that was somehow not the top-1 answer. Build
 enough cross-checks that errors show up as contradictions rather than as
 disappointing numbers.
 
+### 4.5 A demo run exposed an incomplete colourway graph
+
+Running `vpm query` on three out-of-catalogue photos as a demo, one was accepted
+that should have been refused — and the retrieved id (`11168232`) was adjacent to
+the query id (`11168228`), which is not what an unrelated shoe looks like.
+
+Both are "Sparx Men <colour> Mesh Running Shoes"; the catalogue's `colours` field
+links neither to the other. Style clusters were built entirely from that field,
+so an item held out as absent had its twin in the index.
+
+Measured: the colours graph misses **3,563 links across 9.8% of items**; 3,457
+model names were split across clusters. Adding a name-derived model key (colour
+words stripped) took clusters from 23,450 to 12,084.
+
+Worth noting this is the same class of bug as 4.2, hit a second time by a
+different route. Near-duplicate leakage into a held-out set is the default
+failure mode here, and vendor variant metadata is not enough to prevent it.
+
 ---
 
 ## Phase 5 — the unexpected result

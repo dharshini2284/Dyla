@@ -19,7 +19,29 @@ Two jobs, both load-bearing:
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
+
+# Colour words that appear in Myntra product names. Stripping them from a name
+# leaves a model key, which links colourway siblings the `colours` field misses.
+_COLOUR_WORDS = set("""
+black white grey gray navy blue red green yellow orange pink purple brown beige
+tan charcoal olive maroon teal cream silver gold bronze burgundy khaki mustard
+coffee rust peach lavender turquoise magenta ivory sand stone wine multi
+""".split())
+
+_TOKEN = re.compile(r"[a-z0-9]+")
+
+
+def model_key(brand: str, name: str) -> tuple[str, str]:
+    """(brand, name-with-colour-words-removed).
+
+    "Sparx Men Charcoal Mesh Running Shoes" and "Sparx Men Navy Blue Mesh Running
+    Shoes" collapse to the same key, which is what makes them recognisable as one
+    model when the catalogue's own colour graph does not link them.
+    """
+    toks = [t for t in _TOKEN.findall((name or "").lower()) if t not in _COLOUR_WORDS]
+    return ((brand or "").strip().lower(), " ".join(toks))
 
 
 class _DSU:
@@ -41,12 +63,32 @@ class _DSU:
             self.parent[ra] = rb
 
 
-def style_clusters(items_path: Path, restrict: set[int] | None = None) -> dict[int, int]:
+def style_clusters(
+    items_path: Path,
+    restrict: set[int] | None = None,
+    use_name_key: bool = True,
+) -> dict[int, int]:
     """Map product_id -> style_id (the cluster's smallest product id).
 
-    Edges come from the catalogue's own `colours` graph, which lists the same
-    model in other colourways. Only edges whose endpoints are both present are
-    used, so the clustering reflects the catalogue we actually hold.
+    Edges come from two sources:
+
+    1. the catalogue's own `colours` graph, which lists the same model in other
+       colourways; and
+    2. a **name-derived model key**, because that graph is incomplete.
+
+    (2) is not defensive programming, it is a measured hole. "Sparx Men Charcoal
+    Mesh Running Shoes" carries an EMPTY `colours` list while its Navy Blue
+    sibling exists separately in the catalogue. Across 36,506 items the colour
+    graph misses **3,563 links spanning 9.8% of items** -- 3,457 model names are
+    split across clusters that should be one. This surfaced as a false accept:
+    an item held out as "out of catalogue" had its own colourway twin sitting in
+    the index, because nothing linked them.
+
+    That matters twice over. Style-level accuracy is understated, and -- worse --
+    open-set evaluation is corrupted, since "absent" items are not absent when a
+    near-identical sibling remains indexed.
+
+    `use_name_key=False` reproduces the colour-graph-only behaviour for ablation.
     """
     rows = []
     with items_path.open(encoding="utf-8") as fh:
@@ -59,6 +101,7 @@ def style_clusters(items_path: Path, restrict: set[int] | None = None) -> dict[i
         present &= restrict
 
     dsu = _DSU()
+    by_model: dict[tuple[str, str], int] = {}
     for r in rows:
         pid = r["product_id"]
         if pid not in present:
@@ -67,6 +110,13 @@ def style_clusters(items_path: Path, restrict: set[int] | None = None) -> dict[i
         for v in r.get("colour_variants", []):
             if v in present:
                 dsu.union(pid, v)
+        if use_name_key:
+            key = model_key(r.get("brand", ""), r.get("name", ""))
+            if key[1]:
+                if key in by_model:
+                    dsu.union(pid, by_model[key])
+                else:
+                    by_model[key] = pid
 
     # Name each cluster by its smallest member so ids are stable across runs.
     groups: dict[int, list[int]] = {}

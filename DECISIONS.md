@@ -108,6 +108,14 @@ The whitened index (256d) was queried with unwhitened embeddings (1536d). The
 matcher now carries the whitener and refuses to construct on a mismatch, so the
 error cannot reach query time.
 
+### D18 — Style clusters need a name key, not just the vendor's colour graph
+A demo query surfaced a false accept whose retrieved id was adjacent to the query
+id: two Sparx colourways of one model that the `colours` field does not link.
+Measured at catalogue scale, that field misses 3,563 links across 9.8% of items.
+Added a name-derived model key (colour words stripped); clusters 23,450 -> 12,084.
+Refusal numbers measured before this were pessimistic, because some "false
+accepts" were near-identical twins the hold-out failed to exclude.
+
 ### D14 — Scope cut: multi-item and the adaptive head
 Both planned, both cut. The brief says solve one thing properly rather than four
 loosely, and rewards error analysis over feature count. Cutting them is the

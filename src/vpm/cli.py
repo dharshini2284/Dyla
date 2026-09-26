@@ -136,7 +136,22 @@ def _load_matcher(args):
 
 
 def _query(args):
+    import warnings
+    warnings.filterwarnings("ignore")
     matcher, ce = _load_matcher(args)
+
+    # The ranked list is only half the answer -- the decision this system exists
+    # to make is "is it in the catalogue at all", so load the scorer too.
+    calibrator = refuser = distractors = None
+    cal_dir = Path(args.calibrator) if args.calibrator else None
+    if cal_dir and (cal_dir / "calibrator_with_quality.pkl").exists():
+        from .match.conformal import Calibrator, ConformalRefuser
+        calibrator = Calibrator.load(cal_dir / "calibrator_with_quality.pkl")
+        if (cal_dir / "conformal.json").exists():
+            refuser = ConformalRefuser.load(cal_dir / "conformal.json")
+    if args.distractors and Path(args.distractors).exists():
+        from .index.distractors import DistractorDB
+        distractors = DistractorDB.load(Path(args.distractors))
     names = {}
     if args.items and Path(args.items).exists():
         with open(args.items) as fh:
@@ -150,8 +165,36 @@ def _query(args):
           f"({ce.backbone} @{ce.image_size}px)\n")
     for c in res.candidates:
         print(f"  {c.rank + 1}. {c.score:.4f}  {c.item_id}  {names.get(c.item_id, '')}")
+    if calibrator is not None and res.scores_all is not None:
+        from .match.confidence import extract, image_quality
+        from PIL import Image as _Image
+        img = _Image.open(args.image).convert("RGB")
+        dsc = distractors.scores(res.query_vec) if (
+            distractors is not None and res.query_vec is not None) else None
+        feats = extract(res.scores_all, distractor_scores=dsc,
+                        quality=image_quality(img), salient_area=res.salient_area,
+                        final_top1=res.candidates[0].item_id if res.candidates else None)
+        p_match = float(calibrator.predict_proba(feats.values.reshape(1, -1))[0])
+        print(f"\nconfidence: p(top-1 correct and in catalogue) = {p_match:.3f}")
+        if refuser is not None:
+            ps = refuser.predict_set([c.item_id for c in res.candidates],
+                                     [c.score for c in res.candidates], p_match)
+            if ps.refused:
+                print(f"decision:   NO MATCH -- refused "
+                      f"(empty conformal set at alpha={refuser.alpha})")
+                print("            the catalogue does not explain this photo better "
+                      "than a generic\n            bank of shoes does")
+            else:
+                print(f"decision:   ACCEPT -- conformal set of {len(ps.items)} "
+                      f"at alpha={refuser.alpha}: {ps.items}")
+                print(f"            set p-values: "
+                      f"{[round(v, 3) for v in ps.p_values]}")
+        if dsc is not None and len(dsc):
+            print(f"            best distractor similarity {float(dsc.max()):.3f} "
+                  f"vs top-1 {res.candidates[0].score:.3f}")
+
     print("\ntimings (ms):", json.dumps({k: round(v, 1) for k, v in res.timings_ms.items()}))
-    print(f"crops: {res.n_crops} | salient area: {res.salient_area}")
+    print(f"crops: {res.n_crops} | salient area: {res.salient_area:.3f}")
 
 
 def _bench(args):
@@ -228,6 +271,8 @@ def main() -> None:
     q.add_argument("--cap-views", type=int, default=4)
     q.add_argument("--no-localise", action="store_true")
     q.add_argument("--no-tta", action="store_true")
+    q.add_argument("--calibrator", default="data/calibrator")
+    q.add_argument("--distractors", default="data/distractors.npz")
     q.set_defaults(func=_query)
 
     n = sub.add_parser("bench", help="latency breakdown for a single lookup")

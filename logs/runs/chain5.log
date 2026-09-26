@@ -1,3 +1,62 @@
+=== 1/5 regenerate testset with corrected clusters ===
+wrote 180 rows -> data/testset_synthetic/manifest.csv
+  40 in-catalogue items x (3 hard + 1 clean)
+  20 out-of-catalogue items; 70 product ids excluded from the index
+  dev items: 10 (item-disjoint from test)
+=== 2/5 rebuild index ===
+  trimmed 7708 views; 0 images missing/unreadable
+applied PCA-whitening -> 256 dims
+encoded 8994 views of 3000 items in 446.5s (49.6 ms/view) -> data/index.npz
+=== 3/5 rebuild distractor bank ===
+index holds 3000 items / 1403 styles; 22100 items are absent at STYLE level
+  encoded 4000
+wrote 4000 distractor embeddings (256d) -> data/distractors.npz
+=== 4/5 refit calibrator ===
+    entropy_top10                -1.414
+    s1_minus_mean100             +0.993
+    mean_luma                    +0.856
+    zscore_q                     -0.788
+    luma_p95                     -0.704
+    s1_minus_distractor_max      +0.696
+
+[no_quality] AUROC calibrated 0.924  vs raw cosine 0.876
+    entropy_top10                -1.353
+    zscore_q                     -1.089
+    s1_minus_mean100             +0.954
+    s1_minus_distractor_max      +0.883
+    std_top10                    +0.679
+    ratio_12                     +0.592
+
+wrote data/calibrator/ (calibrators, conformal.json, summary.json)
+=== 5/5 evaluate ===
+manifest: {
+  "photos": 180,
+  "items": 40,
+  "by_kind": {
+    "clean": 40,
+    "hard": 120,
+    "out_of_catalogue": 20
+  },
+  "by_split": {
+    "dev": 40,
+    "test": 140
+  },
+  "conditions": {
+    "cluttered_background": 32,
+    "specular_reflection": 25,
+    "motion_blur": 37,
+    "partial_occlusion": 19,
+    "defocus": 28,
+    "low_light": 25,
+    "small_in_frame": 17,
+    "off_angle": 20
+  },
+  "mean_conditions_per_hard_photo": 1.4583333333333333
+}
+loaded calibrator + conformal refuser from data/calibrator
+distractor bank: 4000 embeddings
+ran 180 photos
+
 ## Results — split `test`
 
 140 photos: 90 hard, 30 clean, 20 out-of-catalogue
@@ -83,3 +142,7 @@ Each additional adverse condition multiplies the odds of a correct match by **0.
 > The wrong-accept rate is the error a user actually feels, and a bare FAR/FRR pair hides it.
 
 - AURC **0.150**, excess over oracle (E-AURC) **0.029** — E-AURC isolates how well confidence *ranks* its own errors from how many there are.
+
+
+wrote reports/eval/report.md, report.json, per_photo.jsonl
+=== CHAIN5 COMPLETE ===

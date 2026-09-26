@@ -107,7 +107,7 @@ localisation needs.
 
 ---
 
-## 4. Four bugs I found in my own evaluation
+## 4. Five bugs I found in my own evaluation
 
 The brief says it would rather read an honest account of a system at 70% than a
 claim of 95% with no error analysis. These are the three places my own harness
@@ -194,6 +194,51 @@ of these were caught because they were *impossible* — a 10× gap against a kno
 baseline, and a rank-1 truth that somehow was not the top-1 answer. It is worth
 building enough redundant cross-checks that errors surface as contradictions
 rather than as disappointing numbers.
+
+### 4.5 The colourway graph is incomplete, and a single false accept exposed it
+
+Found by *running the thing*, not by reading the code. Querying three
+out-of-catalogue photos as a demo, one was accepted when it should have been
+refused. The retrieved item was product `11168232` and the query was
+`11168228` — adjacent ids, which is not what an unrelated shoe looks like.
+
+```
+11168228: Sparx Men Charcoal  Mesh Running Shoes   colour_variants = []
+11168232: Sparx Men Navy Blue Mesh Running Shoes   colour_variants = [11904596]
+```
+
+Plainly the same model in two colours, and the catalogue's own `colours` field
+does not link them. Since style clusters were built *entirely* from that field,
+the two landed in separate clusters — so an item held out as "out of catalogue"
+had its own colourway twin sitting in the index.
+
+Measured across the full catalogue rather than assumed from one case:
+
+```
+items                                    36,506
+clusters from the colours graph alone    23,450
+model names split across clusters         3,457
+links the colours graph misses            3,563  (9.8% of items)
+```
+
+The fix adds a second edge source: a **model key** derived from the product name
+with colour words stripped, so "Sparx Men *Charcoal* Mesh Running Shoes" and
+"Sparx Men *Navy Blue* Mesh Running Shoes" collapse to one key. Clusters went
+**23,450 → 12,084** (merging is transitive, so the effect is larger than the raw
+link count), and the exclusion set for a 20-item out-of-catalogue split grew from
+39 product ids to 70.
+
+**Two consequences, and the second is the one that matters.** Style-level
+accuracy was understated. But worse, the *open-set evaluation was corrupted* in
+the same way §4.2 was: "absent" items were not absent. Every refusal number
+measured before this fix is therefore **pessimistic** — some false accepts were
+the system correctly finding a near-identical shoe that the hold-out failed to
+exclude.
+
+This is the second time the same class of bug has bitten this project (§4.2 was
+the first), which is itself the lesson: *near-duplicate leakage into a held-out
+set is the default failure mode of open-set evaluation over a product catalogue*,
+and a vendor's own variant metadata is not sufficient to prevent it.
 
 ---
 
@@ -500,14 +545,36 @@ plan treats as central, is aimed at 2.5% of the errors.
 
 ### Refusal
 
-| | without distractor bank | **with distractor bank** |
-|---|---|---|
-| AUROC, in-catalogue vs out | 0.726 | **0.850** |
-| Calibrated vs raw-cosine AUROC (calibration set) | 0.924 vs 0.890 | **0.935 vs 0.873** |
-| False accept rate | 0.550 | **0.300** |
-| False reject rate | 0.258 | 0.258 (nominal α = 0.10) |
-| **Wrong-accept rate** | 0.100 | **0.083** |
-| AURC / E-AURC | 0.147 / 0.027 | **0.143 / 0.023** |
+Three configurations, in the order they were measured. The third is the one that
+counts — the first two were taken before §4.5 was found, so their hold-out leaked
+colourway twins.
+
+| | no distractor bank | + distractor bank | **+ corrected clusters** |
+|---|---|---|---|
+| AUROC, in-catalogue vs out | 0.726 | 0.850 | **0.827** |
+| Calibrated vs raw-cosine AUROC | 0.924 / 0.890 | 0.935 / 0.873 | **0.924 / 0.876** |
+| False accept rate | 0.550 | 0.300 | **0.250** |
+| False reject rate | 0.258 | 0.258 | **0.292** (nominal α = 0.10) |
+| **Wrong-accept rate** | 0.100 | 0.083 | **0.075** |
+| AURC / E-AURC | 0.147 / 0.027 | 0.143 / 0.023 | **0.150 / 0.029** |
+
+**What is solid, and what is not.** The distractor bank is a genuine, large effect
+— column 1 to column 2 halves the false-accept rate, and the fitted coefficients
+confirm the mechanism (`s1_minus_distractor_max` is consistently among the top
+features, and the calibrated score's margin over raw cosine roughly doubles).
+
+**The column 2 → column 3 movement is not a result and I am not claiming it as
+one.** With 20 negatives, FAR 0.300 → 0.250 is *one photo*. AUROC moved the other
+way (0.850 → 0.827) and FRR rose. I predicted in §4.5 that the leaky hold-out
+made the earlier numbers pessimistic; the corrected run is consistent with that
+but **cannot confirm it at this sample size**, and the honest summary is that the
+third column is measured on a cleaner and genuinely harder hold-out — 70 excluded
+product ids instead of 39 — so the configurations are not directly comparable
+anyway.
+
+This is precisely why the brief asks for 20 out-of-catalogue photographs and why
+that number is uncomfortably small: a 5-percentage-point move in FAR is a single
+image, and no amount of careful statistics rescues that.
 
 **The distractor bank is the single largest improvement in the system**, and it
 is the one component whose value I argued for on theory before measuring. Adding
