@@ -310,7 +310,21 @@ Measured with real weights at batch size 1, median of 30 runs:
 | DINOv2 ViT-S/14 @224 | 11.2 ms | 21.0 ms |
 | exact search, full catalogue | <1 ms | <1 ms |
 
-**The backbone forward pass is the entire budget.** Every meaningful latency
+Measured end to end by `vpm bench` over 25 lookups (SigLIP 2, 3 crops, 8,994
+index rows / 3,000 items):
+
+| stage | median | p90 | share |
+|---|---|---|---|
+| preprocess + saliency localise | 28.42 ms | 28.66 ms | 27% |
+| backbone forward (3 crops) | 75.54 ms | 76.19 ms | 72% |
+| **exact search + aggregation** | **0.50 ms** | 0.59 ms | **0.5%** |
+| **total** | **104.44 ms** | 105.17 ms | |
+
+**The backbone forward pass is the entire budget — search is half a percent of
+it.** Anyone reaching for an ANN index at this scale is optimising the wrong term
+by more than two orders of magnitude, and the way to get faster here is to make
+fewer forward passes (drop a TTA crop, skip localisation on easy queries), not to
+change the index. Every meaningful latency
 decision is about how many forward passes to make (localisation, TTA), not about
 index structure.
 
@@ -446,16 +460,67 @@ distinguishable from zero effect. I would not have guessed that ordering.
 Dose response: each additional adverse condition multiplies the odds of a correct
 match by **0.366**. Accuracy falls 0.709 (one condition) → 0.308 (two).
 
+### Error taxonomy
+
+Every failure is auto-classified rather than described in prose
+(`src/vpm/eval/taxonomy.py`), using the colourway graph plus brand and article
+type: `colourway_confusion` (right style cluster, wrong SKU),
+`same_brand_confusion`, `silhouette_confusion` (same article type, different
+brand), `catastrophic`, and `sku_absent` (the true item was never in the index —
+not a retrieval failure at all). The per-class table is emitted by `vpm eval`
+into `reports/eval/report.md`.
+
+The distinction that carries the most information is colourway confusion: at SKU
+level it is a miss, but it is a categorically different failure from returning an
+unrelated shoe, and one number for both hides which problem you actually have.
+
+**And the result contradicts what I predicted.** Throughout the design I treated
+colourway confusion as the error mode that would dominate — it is why the
+catalogue deliberately imports near-identical variants, and why accuracy is
+reported at style level as well as SKU level. Measured:
+
+| class | n | share of errors |
+|---|---|---|
+| silhouette_confusion (same article type, different brand) | 18 | **0.450** |
+| catastrophic (unrelated article type) | 13 | 0.325 |
+| same_brand_confusion | 8 | 0.200 |
+| **colourway_confusion** | **1** | **0.025** |
+
+Colourway confusion is **2.5% of errors**, not the bulk of them. The system is
+not failing to tell near-identical SKUs apart; it is failing to tell a Puma
+sneaker from an unrelated brand's sneaker, and a third of the time it returns
+something in a different category entirely. That is consistent with §5 — with
+identity worth 0.008 of cosine, the model is matching *silhouette and product-shot
+style*, not instance. It also means the style-level metric buys almost nothing
+here (0.567 vs 0.556), which I had expected to be a much larger gap.
+
+I record this because the prediction was wrong in a way that would have changed
+where I spent effort: hard-negative mining over the colourway graph, which the
+plan treats as central, is aimed at 2.5% of the errors.
+
 ### Refusal
 
-| | |
-|---|---|
-| AUROC, in-catalogue vs out | **0.726** (120 in, 20 out) |
-| Calibrated vs raw cosine AUROC (calibration set) | 0.924 vs 0.890 |
-| False accept rate | **0.550** |
-| False reject rate | 0.258 (nominal α = 0.10) |
-| **Wrong-accept rate** | **0.100** |
-| AURC / E-AURC | 0.147 / 0.027 |
+| | without distractor bank | **with distractor bank** |
+|---|---|---|
+| AUROC, in-catalogue vs out | 0.726 | **0.850** |
+| Calibrated vs raw-cosine AUROC (calibration set) | 0.924 vs 0.890 | **0.935 vs 0.873** |
+| False accept rate | 0.550 | **0.300** |
+| False reject rate | 0.258 | 0.258 (nominal α = 0.10) |
+| **Wrong-accept rate** | 0.100 | **0.083** |
+| AURC / E-AURC | 0.147 / 0.027 | **0.143 / 0.023** |
+
+**The distractor bank is the single largest improvement in the system**, and it
+is the one component whose value I argued for on theory before measuring. Adding
+4,000 held-out shoes — absent at *style* level, so no colourway twin leaks back —
+cut the false-accept rate nearly in half and moved AUROC 0.726 → 0.850. The
+fitted coefficients confirm the mechanism rather than just the outcome:
+`distractor_max` is the second-strongest feature in the model and
+`s1_minus_distractor_max` the fourth, and the margin of the calibrated score over
+raw cosine roughly doubled (+0.034 → +0.062).
+
+That is the likelihood-ratio argument from §6 doing exactly what it was supposed
+to: asking *how much better does the catalogue explain this photo than a generic
+pile of shoes does*, instead of asking whether a similarity clears a threshold.
 
 **This is the weakest part of the system and I am not going to dress it up.** A
 FAR of 0.55 means the refuser accepts more than half of the out-of-catalogue
@@ -477,6 +542,40 @@ is still thin, and a 20-negative sample cannot resolve where the threshold
 belongs. The fix is more negatives and a larger distractor database, not a
 different threshold.
 
+### Growing the catalogue without recomputing (`scripts/incremental_add.py`)
+
+The extension asks to add a thousand items "without recomputing anything you
+already had" and show accuracy on the originals is unchanged. Claiming that is
+easy, so the script emits two certificates instead:
+
+| | |
+|---|---|
+| items added | 1,000 |
+| **embeddings recomputed** | **0** |
+| **pre-existing embeddings bit-identical** | **True** (`np.array_equal` on raw float32, not `allclose`) |
+| Recall@1 on the *original* items | 0.1667 → 0.1467 (**−2.0 pp**) |
+
+`array_equal` rather than a tolerance is deliberate: a tolerance would hide
+exactly the drift being tested for.
+
+**The −2 pp is real and is not a bug.** A thousand new items are a thousand new
+competitors for the same queries, so a small drop is the correct behaviour; what
+must not happen is the *old vectors* changing, which certificate 1 covers. The
+probe uses deliberately perturbed queries — a query taken verbatim from the index
+self-retrieves at cosine 1.0, saturating the metric at 1.000 and certifying
+nothing even if the insert had wrecked the neighbourhood structure. (My first
+version of this test did exactly that and reported a meaningless 1.000 → 1.000.)
+
+This works because two earlier choices, both made for other reasons, happen to
+make insertion a concatenation: the whitener is **fitted once and frozen** (a
+refit would rotate every existing vector and break certificate 1), and view
+capping is per item, so it never reaches across items.
+
+**The cost, stated rather than hidden:** a frozen whitener drifts from the
+optimal transform as the catalogue grows. This buys O(1) insertion at the price
+of a transform that slowly goes stale and eventually needs an offline refit — at
+which point every embedding *does* have to be recomputed.
+
 ## 10. What does not work, and what I did not do
 
 0. **Refusal is the weak point**: FAR 0.550 at a wrong-accept rate of 0.100, and
@@ -490,15 +589,20 @@ different threshold.
    Holding out view 0 makes every query cross-view, whereas a real photo is
    usually roughly side-on like the hero shot. Real-photo accuracy should be
    *higher* than 0.672, but by an amount I have not measured and will not guess.
-3. **αQE and DBA are built and default to off.** αQE drags the query toward the
-   catalogue manifold, inflating top-1 for out-of-catalogue queries — it raises
-   exactly the false-accept rate the hardest extension is graded on. DBA averages
-   colourway clusters toward their centroid, destroying the distinction that
-   matters most here. Two negative results, kept behind flags.
-4. **Geometric verification is a confidence feature, not a re-ranker.** 40 RANSAC
-   inliers is near-proof of a match; 2 inliers means "low texture" and is
-   uninformative. That asymmetry makes it useless for ordering the low-texture
-   majority and useful as one input among many.
+3. **αQE and DBA are built (`src/vpm/match/rerank.py`) and default to off.** αQE
+   drags the query toward the catalogue manifold, inflating top-1 for
+   out-of-catalogue queries — it raises exactly the false-accept rate the hardest
+   extension is graded on, so any confidence feature must be computed on the
+   pre-expansion query. DBA averages colourway clusters toward their centroid,
+   destroying the distinction that matters most here. Two negative results, kept
+   behind flags rather than deleted.
+4. **Geometric verification is a confidence feature, not a re-ranker**, and the
+   asymmetry is measured rather than asserted. On two real catalogue images,
+   SIFT + RANSAC (affine, not homography — a shoe upper deforms and the planar
+   assumption costs inliers on genuine matches) gives **91 inliers on a
+   self-match and 2 on a cross-match**. High counts are near-proof; low counts
+   mean "low texture", not "not a match". One-sided evidence is useless for
+   ordering the low-texture majority and useful as one calibrator input.
 5. **The synthetic→real calibration gap is unmeasured**, because measuring it
    requires the real photos. It is the largest known unknown in the design.
 6. **Not attempted:** the multi-item extension, and the domain-adaptive

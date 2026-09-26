@@ -44,6 +44,7 @@ class PhotoResult:
     in_top5_sku: bool
     rank_of_truth: int | None     # None if truth not in the ranked list at all
     latency_ms: float
+    error_class: str = ""
     p_match: float | None = None
     refused: bool | None = None
     set_size: int | None = None
@@ -86,6 +87,9 @@ def run_photos(
     full_rank: bool = True,
     calibrator=None,
     refuser=None,
+    distractors=None,
+    meta: dict | None = None,
+    indexed: set[int] | None = None,
 ) -> list[PhotoResult]:
     """Run the matcher over a labelled set.
 
@@ -94,8 +98,10 @@ def run_photos(
     the three-way outcome table and the FAR/FRR figures.
     """
     from ..match.confidence import extract, image_quality
+    from .taxonomy import classify
 
     style_of = style_of or {}
+    meta = meta or {}
     sty = lambda p: style_of.get(int(p), int(p))
     out: list[PhotoResult] = []
 
@@ -124,7 +130,10 @@ def run_photos(
 
         p_match = refused = set_size = None
         if calibrator is not None and res.scores_all is not None:
-            feats = extract(res.scores_all, quality=image_quality(img),
+            dscores = distractors.scores(res.query_vec) if (
+                distractors is not None and res.query_vec is not None) else None
+            feats = extract(res.scores_all, distractor_scores=dscores,
+                            quality=image_quality(img),
                             salient_area=res.salient_area, final_top1=top1)
             p_match = float(calibrator.predict_proba(feats.values.reshape(1, -1))[0])
             if refuser is not None:
@@ -139,6 +148,8 @@ def run_photos(
             correct_style=bool(truth is not None and top1 is not None and sty(top1) == sty(truth)),
             in_top5_sku=bool(truth is not None and truth in top5),
             rank_of_truth=rank, latency_ms=dt,
+            error_class=classify(truth, top1, meta, style_of, indexed)
+            if ph.kind != "out_of_catalogue" else "",
             p_match=p_match, refused=refused, set_size=set_size,
         ))
     return out
@@ -202,6 +213,12 @@ def evaluate(results: list[PhotoResult], split: str = "test") -> dict:
             "boot": _acc_block(block, "correct_sku"),
         }
     report["per_condition"] = per_cond
+
+    # ---- automatic error taxonomy ----
+    if hard:
+        from .taxonomy import summarise as tax_summarise
+        report["taxonomy_hard"] = tax_summarise(
+            [{"error_class": r.error_class} for r in hard if r.error_class])
 
     # ---- confounding + marginal effects ----
     if hard:
@@ -267,6 +284,11 @@ def to_markdown(report: dict) -> str:
         a("### The gap between the two halves (paired by item, McNemar exact)\n")
         a(f"- clean-right/hard-wrong: **{g['n01']}**, clean-wrong/hard-right: **{g['n10']}**")
         a(f"- accuracy drop: **{g['delta']*100:+.1f} pp** over {g['n_pairs']} pairs, p = {g['p_value']:.4g}\n")
+
+    if "taxonomy_hard" in report:
+        from .taxonomy import to_markdown as tax_md
+        a(tax_md(report["taxonomy_hard"]))
+        a("")
 
     if report.get("per_condition"):
         a("### Accuracy by failure condition\n")

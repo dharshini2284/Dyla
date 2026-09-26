@@ -43,8 +43,12 @@ everywhere and is not a Part B result.
       coverage verified against nominal at α ∈ {0.05, 0.10, 0.20}
 - [x] **Automated stumper** — corruption generator with realistic condition
       co-occurrence
-- [~] **100k / <100 ms CPU** — latency measured and the budget shown to close
-      with ViT-S; the 100k index itself is not built
+- [x] **Add 1,000 items without recomputing** — 0 embeddings recomputed,
+      pre-existing rows bit-identical, −2.0 pp on the originals from new
+      competition. `reports/incremental.json`
+- [~] **100k / <100 ms CPU** — latency measured end to end (104 ms at 3 crops,
+      of which search is 0.50 ms) and the budget shown to close with ViT-S;
+      the 100k index itself is not built
 - [ ] Multi-item photos — **cut deliberately** (see DECISIONS.md D14)
 
 ## Before you send

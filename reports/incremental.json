@@ -1,0 +1,13 @@
+{
+  "probe": "perturbed queries (noise=0.35) -- a verbatim index row would self-retrieve at cosine 1.0 and saturate the metric",
+  "items_before": 3000,
+  "items_added": 1000,
+  "views_before": 8994,
+  "views_added": 2998,
+  "embeddings_recomputed": 0,
+  "pre_existing_embeddings_bit_identical": true,
+  "recall_at_1_original_before": 0.16666666666666666,
+  "recall_at_1_original_after": 0.14666666666666667,
+  "delta": -0.01999999999999999,
+  "n_probe": 300
+}

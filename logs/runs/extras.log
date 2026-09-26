@@ -1,0 +1,19 @@
+=== bench ===
+
+8994 index rows / 3000 items, 3 crops, 25 iters
+
+stage                     median       p90
+------------------------------------------
+preprocess_localise       28.42ms    28.66ms
+backbone                  75.54ms    76.19ms
+search                     0.50ms     0.59ms
+total                    104.44ms   105.17ms
+=== incremental (add 1000 items, prove no recompute) ===
+before: 3000 items / 8994 views
+Recall@1 on original items, before: 1.0000
+encoding 1000 new items (nothing existing is re-encoded)
+certificate 1 -- pre-existing embeddings bit-identical: True
+Recall@1 on original items, after:  1.0000  (delta +0.0000)
+
+wrote data/index_grown.npz and reports/incremental.json
+=== EXTRAS COMPLETE ===

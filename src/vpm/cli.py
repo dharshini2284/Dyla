@@ -58,9 +58,18 @@ def _eval(args):
     else:
         print("no calibrator found -- refusal metrics will fall back to raw cosine")
 
+    distractors = None
+    if args.distractors and Path(args.distractors).exists():
+        from .index.distractors import DistractorDB
+        distractors = DistractorDB.load(Path(args.distractors))
+        print(f"distractor bank: {len(distractors)} embeddings")
+
+    from .eval.taxonomy import load_meta
     style_of = style_clusters(Path(args.items)) if args.items else {}
+    meta = load_meta(Path(args.items)) if args.items else {}
     results = run_photos(matcher, photos, root, style_of=style_of, k=args.k,
-                         calibrator=calibrator, refuser=refuser)
+                         calibrator=calibrator, refuser=refuser, distractors=distractors,
+                         meta=meta, indexed=catalogue_ids)
     print(f"ran {len(results)} photos")
 
     report = evaluate(results, split=args.split)
@@ -191,6 +200,7 @@ def main() -> None:
     e.add_argument("--no-localise", action="store_true")
     e.add_argument("--no-tta", action="store_true")
     e.add_argument("--calibrator", default="data/calibrator")
+    e.add_argument("--distractors", default="data/distractors.npz")
     e.add_argument("--out", default="reports/eval")
     e.set_defaults(func=_eval)
 

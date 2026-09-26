@@ -52,7 +52,15 @@ vpm query path/to/photo.jpg --index data/index.npz --items data/items.jsonl
 # 7. Latency breakdown for one lookup
 vpm bench --index data/index.npz --iters 25
 
-# 8. Full evaluation: per-condition accuracy, marginal effects, refusal, gap analysis
+# 8. Build the held-out distractor bank -- footwear absent from the catalogue at
+#    STYLE level, used to normalise confidence scores (see REPORT.md section 6)
+python scripts/build_distractors.py --index data/index.npz --items data/items.jsonl
+
+# 9. Fit the open-set calibrator and the conformal refuser
+python scripts/fit_calibrator.py --index data/index.npz --items data/items.jsonl
+
+# 10. Full evaluation: per-condition accuracy, marginal effects, error taxonomy,
+#     refusal, gap analysis
 vpm eval --index data/index.npz --items data/items.jsonl \
          --testset data/testset_synthetic --out reports/eval
 ```
@@ -120,6 +128,8 @@ src/vpm/
 | **Style clusters** | 36% of naively held-out items kept a colourway twin in the index, making "absent" queries anything but. |
 | **Conformal refusal** | The false-reject rate becomes a design parameter (α) rather than a tuned threshold. |
 | **αQE / DBA default off** | Both inflate false accepts or destroy colourway distinctions. Built, measured, left off. |
+| **Distractor bank** | Confidence is a likelihood ratio -- how much better the catalogue explains the photo than a generic pile of shoes does -- not an absolute similarity. |
+| **Geometric verification as a feature** | One-sided evidence: measured 91 inliers on a self-match, 2 on a cross-match. Useless for ranking, useful for calibration. |
 
 ---
 

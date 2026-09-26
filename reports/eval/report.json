@@ -24,7 +24,7 @@
       "n": 90
     },
     "median_rank_of_truth": 1.0,
-    "latency_ms_median": 159.74093750264728
+    "latency_ms_median": 111.25293749500997
   },
   "clean": {
     "r1_sku": {
@@ -46,7 +46,7 @@
       "n": 30
     },
     "median_rank_of_truth": 1.0,
-    "latency_ms_median": 158.9980415010359
+    "latency_ms_median": 111.03477099095471
   },
   "gap_paired": {
     "n01": 40,
@@ -159,6 +159,32 @@
         "hi": 0.6153846153846154,
         "n": 12
       }
+    }
+  },
+  "taxonomy_hard": {
+    "n": 90,
+    "counts": {
+      "correct": 50,
+      "colourway_confusion": 1,
+      "same_brand_confusion": 8,
+      "silhouette_confusion": 18,
+      "catastrophic": 13,
+      "sku_absent": 0
+    },
+    "share_of_all": {
+      "correct": 0.5555555555555556,
+      "colourway_confusion": 0.011111111111111112,
+      "same_brand_confusion": 0.08888888888888889,
+      "silhouette_confusion": 0.2,
+      "catastrophic": 0.14444444444444443,
+      "sku_absent": 0.0
+    },
+    "share_of_errors": {
+      "colourway_confusion": 0.025,
+      "same_brand_confusion": 0.2,
+      "silhouette_confusion": 0.45,
+      "catastrophic": 0.325,
+      "sku_absent": 0.0
     }
   },
   "cooccurrence": {
@@ -486,20 +512,20 @@
     }
   },
   "refusal": {
-    "auroc": 0.725625,
+    "auroc": 0.8495833333333334,
     "n_pos": 120,
     "n_neg": 20,
     "three_way": {
-      "in_accepted_correct": 77,
-      "in_accepted_wrong": 12,
+      "in_accepted_correct": 79,
+      "in_accepted_wrong": 10,
       "in_refused": 31,
-      "ooc_accepted_FAR": 0.55,
+      "ooc_accepted_FAR": 0.3,
       "in_refused_FRR": 0.25833333333333336,
-      "wrong_accept_rate": 0.1
+      "wrong_accept_rate": 0.08333333333333333
     }
   },
   "risk_coverage": {
-    "aurc": 0.14696925663066945,
-    "e_aurc": 0.02661662580794194
+    "aurc": 0.14302479179593966,
+    "e_aurc": 0.022672160973212147
   }
 }

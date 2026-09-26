@@ -1,3 +1,59 @@
+=== distractors ===
+index holds 3000 items / 2029 styles; 32507 items are absent at STYLE level
+  encoded 4000
+wrote 4000 distractor embeddings (256d) -> data/distractors.npz
+=== calibrator ===
+  negatives: 200
+  negatives: 400
+  negatives: 400 total
+dataset: 1000 rows, positive rate 0.308
+
+[with_quality] AUROC calibrated 0.935  vs raw cosine 0.873
+    entropy_top10                -1.472
+    distractor_max               -0.892
+    zscore_q                     -0.824
+    s1_minus_distractor_max      +0.636
+    s1_minus_mean100             +0.630
+    std_top10                    +0.625
+
+[no_quality] AUROC calibrated 0.936  vs raw cosine 0.873
+    entropy_top10                -1.475
+    distractor_max               -0.888
+    zscore_q                     -0.869
+    s1_minus_distractor_max      +0.666
+    std_top10                    +0.666
+    s1_minus_mean100             +0.629
+
+wrote data/calibrator/ (calibrators, conformal.json, summary.json)
+=== eval ===
+manifest: {
+  "photos": 180,
+  "items": 40,
+  "by_kind": {
+    "clean": 40,
+    "hard": 120,
+    "out_of_catalogue": 20
+  },
+  "by_split": {
+    "dev": 40,
+    "test": 140
+  },
+  "conditions": {
+    "cluttered_background": 32,
+    "specular_reflection": 25,
+    "motion_blur": 37,
+    "partial_occlusion": 19,
+    "defocus": 28,
+    "low_light": 25,
+    "small_in_frame": 17,
+    "off_angle": 20
+  },
+  "mean_conditions_per_hard_photo": 1.4583333333333333
+}
+loaded calibrator + conformal refuser from data/calibrator
+distractor bank: 4000 embeddings
+ran 180 photos
+
 ## Results — split `test`
 
 140 photos: 90 hard, 30 clean, 20 out-of-catalogue
@@ -83,3 +139,7 @@ Each additional adverse condition multiplies the odds of a correct match by **0.
 > The wrong-accept rate is the error a user actually feels, and a bare FAR/FRR pair hides it.
 
 - AURC **0.143**, excess over oracle (E-AURC) **0.023** — E-AURC isolates how well confidence *ranks* its own errors from how many there are.
+
+
+wrote reports/eval/report.md, report.json, per_photo.jsonl
+=== CHAIN4 COMPLETE ===

@@ -42,6 +42,7 @@ from vpm.embed.backbone import EncodeConfig, build_backbone
 from vpm.embed.encode import CatalogueEmbeddings
 from vpm.eval.corrupt import CONDITIONS, apply_many
 from vpm.eval.stats import auroc
+from vpm.index.distractors import DistractorDB
 from vpm.index.flat import FlatIndex, cap_views
 from vpm.index.pca import PCAWhitening
 from vpm.match.confidence import extract, image_quality
@@ -72,6 +73,7 @@ def main() -> None:
     ap.add_argument("--n-pos", type=int, default=900)
     ap.add_argument("--n-neg", type=int, default=600)
     ap.add_argument("--alpha", type=float, default=0.1)
+    ap.add_argument("--distractors", type=Path, default=Path("data/distractors.npz"))
     ap.add_argument("--out", type=Path, default=Path("data/calibrator"))
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
@@ -90,6 +92,15 @@ def main() -> None:
     matcher = Matcher(bb, index, localise_query=False, tta=False, whitener=whitener)
     indexed = set(index.unique_items.tolist())
     print(f"index: {index.n_items} items / {len(index.emb)} views")
+
+    distractors = None
+    if args.distractors and args.distractors.exists():
+        distractors = DistractorDB.load(args.distractors)
+        print(f"distractor bank: {len(distractors)} embeddings ({distractors.dim}d)")
+    else:
+        print("WARNING: no distractor bank -- the distractor-normalisation features "
+              "will be constant zero and the refusal model loses its strongest block. "
+              "Build one with scripts/build_distractors.py")
 
     rows = [json.loads(l) for l in args.items.open() if l.strip()]
     style_of = style_clusters(args.items)
@@ -122,7 +133,10 @@ def main() -> None:
         # A positive is only a positive if the retrieval was ACTUALLY correct --
         # the calibrator predicts "top-1 is right", not "the item exists".
         y = int(label == 1 and top1 == pid)
-        f = extract(res.scores_all, quality=image_quality(img),
+        dscores = distractors.scores(res.query_vec) if (
+            distractors is not None and res.query_vec is not None) else None
+        f = extract(res.scores_all, distractor_scores=dscores,
+                    quality=image_quality(img),
                     salient_area=res.salient_area, crop_top1=None, final_top1=top1)
         return f.values, y, pid, float(res.candidates[0].score)
 

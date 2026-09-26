@@ -37,6 +37,7 @@ class MatchResult:
     timings_ms: dict[str, float] = field(default_factory=dict)
     salient_area: float | None = None
     n_crops: int = 1
+    query_vec: np.ndarray | None = None   # for scoring against the distractor bank
 
     def top_ids(self) -> list[int]:
         return [c.item_id for c in self.candidates]
@@ -139,6 +140,7 @@ class Matcher:
             timings_ms=timings,
             salient_area=area,
             n_crops=len(crops),
+            query_vec=q[0],
         )
 
     def lookup_path(self, path: str | Path, k: int = 5) -> MatchResult:
