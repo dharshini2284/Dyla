@@ -355,15 +355,53 @@ Measured with real weights at batch size 1, median of 30 runs:
 | DINOv2 ViT-S/14 @224 | 11.2 ms | 21.0 ms |
 | exact search, full catalogue | <1 ms | <1 ms |
 
-Measured end to end by `vpm bench` over 25 lookups (SigLIP 2, 3 crops, 8,994
-index rows / 3,000 items):
+Measured end to end by `vpm bench` (SigLIP 2, 8,994 index rows / 3,000 items):
 
-| stage | median | p90 | share |
-|---|---|---|---|
-| preprocess + saliency localise | 28.42 ms | 28.66 ms | 27% |
-| backbone forward (3 crops) | 75.54 ms | 76.19 ms | 72% |
-| **exact search + aggregation** | **0.50 ms** | 0.59 ms | **0.5%** |
-| **total** | **104.44 ms** | 105.17 ms | |
+| stage | with localisation (3 crops) | **default, no localisation (2 crops)** |
+|---|---|---|
+| preprocess + localise | 28.42 ms | **0.57 ms** |
+| backbone forward | 75.54 ms | **53.42 ms** |
+| exact search + aggregation | 0.50 ms | **0.38 ms** |
+| **total** | 104.44 ms | **54.35 ms** |
+
+### The saliency localiser was measured and switched off
+
+I built the patch-norm localiser as the main answer to the domain gap, debugged
+DINOv2's artefact-token problem to make it work (§4.3), and added
+largest-connected-component filtering on top. Then I rendered what it was
+actually doing and found it selecting the **top 35% of a cluttered frame — pure
+background — while the shoe sat in the middle**.
+
+The obvious inference was that this explained the project's largest single
+failure, cluttered background at 0/23 and −58 pp. So I ran the ablation:
+
+| | localise ON | localise OFF |
+|---|---|---|
+| hard R@1 | 0.556 [0.467, 0.644] | **0.556** [0.456, 0.644] |
+| hard R@5 | 0.656 | **0.656** |
+| median latency | 112 ms | **60 ms** |
+
+**The inference was wrong, and the feature is worthless.** Cluttered background
+stays at 0/23 either way. Across all eight conditions the net effect is zero —
+`off_angle` is better with it (+0.067), `motion_blur` better without (+0.048),
+both one photo — and every other condition is bit-identical.
+
+So localisation costs **47% of the latency budget and buys nothing measurable**.
+It is now **off by default**, recoverable with `--localise`.
+
+Two things worth separating here. First, this is a negative result about a
+component I had already invested in and had good reasons to believe in — the
+domain gap is real, and localising the object is the textbook answer to it.
+Second, it was only findable by *looking at the output*: the numbers alone said
+"cluttered background is bad", and it took the overlay to show the localiser was
+choosing background, which prompted the ablation that showed it did not matter
+either way.
+
+I am **not** removing it, for a stated reason: the synthetic clutter shrinks the
+shoe into high-frequency noise, which is a harsher and less realistic input than
+a real photo of a shoe on a carpet. On hand-shot photographs localisation may
+well earn its cost. The flag stays, the default reflects what is measured today,
+and the question is explicitly open.
 
 **The backbone forward pass is the entire budget — search is half a percent of
 it.** Anyone reaching for an ANN index at this scale is optimising the wrong term
@@ -699,10 +737,25 @@ thing a table cannot do — a reader can see that a `silhouette_confusion` reall
 is two shoes of the same shape, rather than taking the classifier's word for it.
 Self-contained, thumbnails embedded.
 
-Both are small, and neither is a demo. A generic "upload a photo and see results"
-page was the obvious thing to build and is the least useful, because it
-demonstrates the part that already works instead of the part that is slow or
-hard to verify.
+**An interactive matcher (`vpm ui`).** Drop a photo, see the ranked matches, the
+calibrated confidence, the conformal set, an explicit refusal badge *with its
+reason*, a per-stage latency breakdown and the saliency overlay.
+
+I built this last and reluctantly — a demo page shows the part that already
+works. It earned its place for an unplanned reason: **rendering the saliency
+overlay is what exposed that the localiser was worthless** (§7). The numbers
+alone said "cluttered background is bad"; it took seeing the box land on empty
+background to prompt the ablation that removed 47% of the latency. That is an
+argument for building the visualisation, not for building the demo.
+
+Stdlib `http.server` throughout. Streamlit would have been faster to write and
+would have added roughly thirty transitive dependencies to a project whose gate
+is *"does it run from a clean checkout"* — a bad trade here.
+
+**On reproducibility:** `requirements.lock` is regenerated from the working
+environment, and it caught real drift — numpy moved 1.26 → 2.4.6 and torch
+2.11 → 2.14 mid-project, which broke `ndarray.ptp()` in the overlay renderer.
+A lock file is not bureaucracy on a project a reviewer is expected to re-run.
 
 ## 12. What I would do next, in order
 

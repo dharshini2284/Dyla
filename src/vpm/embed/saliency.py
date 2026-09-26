@@ -88,6 +88,46 @@ def crop_to_box(img: Image.Image, box: tuple[float, float, float, float]) -> Ima
     return img.crop(px)
 
 
+def heat_overlay(
+    img: Image.Image,
+    heat: np.ndarray,
+    box: tuple[float, float, float, float] | None = None,
+    alpha: float = 0.55,
+    max_side: int = 420,
+) -> Image.Image:
+    """Render the patch-norm map over the photo, with the chosen crop box.
+
+    This visualises the signal the localiser ACTUALLY uses -- per-patch feature
+    norm -- rather than a Grad-CAM or attention map of something the system does
+    not consult. Showing a different saliency than the one driving the crop would
+    be a prettier picture and a false explanation.
+
+    Warm = high norm = foreground. The drawn rectangle is the box that was fed to
+    the backbone, so a wrong crop is visible rather than inferred.
+    """
+    import cv2
+
+    rgb = img.convert("RGB")
+    rgb.thumbnail((max_side, max_side), Image.LANCZOS)
+    W, H = rgb.size
+    base = np.asarray(rgb).astype(np.float32)
+
+    h = cv2.resize(heat.astype(np.float32), (W, H), interpolation=cv2.INTER_CUBIC)
+    h = np.clip((h - h.min()) / (float(h.max() - h.min()) + 1e-9), 0, 1)
+    # Blue (cold, background) -> red (warm, object). Built by hand so the module
+    # keeps no matplotlib dependency.
+    cmap = np.stack([h, np.clip(1.2 * (1 - np.abs(h - 0.5) * 2), 0, 1), 1 - h], axis=-1) * 255.0
+
+    out = (1 - alpha) * base + alpha * cmap
+    out = np.clip(out, 0, 255).astype(np.uint8)
+
+    if box is not None:
+        l, t, r, b = box
+        cv2.rectangle(out, (int(l * W), int(t * H)), (int(r * W) - 1, int(b * H) - 1),
+                      (255, 255, 255), 2)
+    return Image.fromarray(out)
+
+
 def localise(
     backbone: Backbone, img: Image.Image, quantile: float = 0.6, margin: float = 0.12
 ) -> tuple[Image.Image, tuple[float, float, float, float], float]:

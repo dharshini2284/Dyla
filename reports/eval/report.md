@@ -6,8 +6,8 @@
 
 | set | R@1 SKU | R@1 style | R@5 SKU | median rank of truth | median latency |
 |---|---|---|---|---|---|
-| clean | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] | 1 | 112 ms |
-| hard | 0.556 [0.467, 0.644] | 0.567 [0.478, 0.656] | 0.656 [0.567, 0.744] | 1 | 112 ms |
+| clean | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] | 1 | 60 ms |
+| hard | 0.556 [0.456, 0.644] | 0.567 [0.467, 0.656] | 0.656 [0.578, 0.733] | 1 | 60 ms |
 
 95% intervals are cluster bootstrap resampling **items**, not photos.
 
@@ -23,8 +23,8 @@
 | correct | 50 | 0.556 | — |
 | colourway_confusion | 1 | 0.011 | 0.025 |
 | same_brand_confusion | 9 | 0.100 | 0.225 |
-| silhouette_confusion | 17 | 0.189 | 0.425 |
-| catastrophic | 13 | 0.144 | 0.325 |
+| silhouette_confusion | 14 | 0.156 | 0.350 |
+| catastrophic | 16 | 0.178 | 0.400 |
 
 > `colourway_confusion` is the right model in the wrong colour. At SKU level it is a miss, but it is a categorically different failure from returning an unrelated shoe, and reporting one number for both hides which problem you actually have.
 
@@ -35,10 +35,10 @@
 | cluttered_background | 23 | 0.000 | [-0.000, 0.143] | 0.000 |
 | small_in_frame | 12 | 0.333 | [0.138, 0.609] | 0.417 |
 | low_light | 17 | 0.412 | [0.216, 0.640] | 0.412 |
+| off_angle | 15 | 0.467 | [0.248, 0.699] | 0.467 |
 | partial_occlusion | 10 | 0.500 | [0.237, 0.763] | 0.500 |
-| off_angle | 15 | 0.533 | [0.301, 0.752] | 0.533 |
-| motion_blur | 21 | 0.667 | [0.454, 0.828] | 0.667 |
 | defocus | 22 | 0.682 | [0.473, 0.836] | 0.682 |
+| motion_blur | 21 | 0.714 | [0.500, 0.862] | 0.714 |
 | specular_reflection | 14 | 0.786 | [0.524, 0.924] | 0.786 |
 
 > Cells are small. At n=10 a 95% interval spans roughly ±25 pp, so the **ordering** of these conditions is not resolvable from this set. The marginal-effects table and the synthetic dose-response sweep are what the condition ranking should be read from.
@@ -47,14 +47,14 @@
 
 | condition | n | log-odds | 95% CI | avg marginal effect |
 |---|---|---|---|---|
-| cluttered_background | 23 | -2.94 | [-3.34, -2.45] | -58.1 pp |
-| low_light | 17 | -1.21 | [-2.05, -0.26] | -22.2 pp |
-| partial_occlusion | 10 | -0.32 | [-1.46, +0.63] | -5.6 pp |
-| small_in_frame | 12 | -0.24 | [-0.84, +0.37] | -4.2 pp |
-| defocus | 22 | +0.13 | [-0.42, +0.70] | +2.3 pp |
-| motion_blur | 21 | +0.28 | [-0.46, +1.10] | +4.9 pp |
-| specular_reflection | 14 | +0.32 | [-0.38, +1.24] | +5.5 pp |
-| off_angle | 15 | +0.44 | [-0.13, +1.01] | +7.4 pp |
+| cluttered_background | 23 | -2.86 | [-3.26, -2.39] | -57.0 pp |
+| low_light | 17 | -1.35 | [-2.16, -0.45] | -24.5 pp |
+| partial_occlusion | 10 | -0.27 | [-1.40, +0.67] | -4.7 pp |
+| small_in_frame | 12 | -0.21 | [-0.82, +0.39] | -3.7 pp |
+| off_angle | 15 | +0.12 | [-0.57, +0.75] | +2.0 pp |
+| defocus | 22 | +0.14 | [-0.41, +0.69] | +2.3 pp |
+| specular_reflection | 14 | +0.31 | [-0.38, +1.22] | +5.3 pp |
+| motion_blur | 21 | +0.55 | [-0.15, +1.33] | +9.4 pp |
 
 > Conditions co-occur, so per-condition accuracy above is confounded. This fits correctness on the condition indicator matrix to estimate each condition's marginal contribution. Penalised and bootstrapped by item; **exploratory** at this sample size.
 
@@ -70,16 +70,16 @@ Each additional adverse condition multiplies the odds of a correct match by **0.
 
 ### Refusal
 
-- AUROC in-catalogue vs out-of-catalogue: **0.827** (120 in, 20 out)
+- AUROC in-catalogue vs out-of-catalogue: **0.837** (120 in, 20 out)
 
 | outcome | count / rate |
 |---|---|
-| in-catalogue, accepted & correct | 76 |
-| in-catalogue, accepted & **wrong** | 9 |
-| in-catalogue, refused (FRR) | 35 (0.292) |
+| in-catalogue, accepted & correct | 78 |
+| in-catalogue, accepted & **wrong** | 10 |
+| in-catalogue, refused (FRR) | 32 (0.267) |
 | out-of-catalogue, accepted (**FAR**) | 0.250 |
-| **wrong-accept rate** | 0.075 |
+| **wrong-accept rate** | 0.083 |
 
 > The wrong-accept rate is the error a user actually feels, and a bare FAR/FRR pair hides it.
 
-- AURC **0.150**, excess over oracle (E-AURC) **0.029** — E-AURC isolates how well confidence *ranks* its own errors from how many there are.
+- AURC **0.147**, excess over oracle (E-AURC) **0.026** — E-AURC isolates how well confidence *ranks* its own errors from how many there are.

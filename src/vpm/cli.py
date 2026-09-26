@@ -86,10 +86,44 @@ def _eval(args):
                         _r = json.loads(line)
                         meta_raw[_r["product_id"]] = _r
         html = build_html(report, [_asdict(r) for r in results], root,
-                          Path(args.images), meta_raw, Path(args.out) / "errors.html")
+                          Path(args.images), meta_raw, Path(args.out) / "errors.html",
+                          backbone=matcher.backbone)
         print(f"wrote {html} ({html.stat().st_size // 1024} KB, self-contained)")
     print("\n" + to_markdown(report))
     print(f"\nwrote {args.out}/report.md, report.json, per_photo.jsonl")
+
+
+def _load_scorers(args):
+    """Calibrator, conformal refuser and distractor bank, if they have been built."""
+    calibrator = refuser = distractors = None
+    cal_dir = Path(getattr(args, "calibrator", "") or "")
+    if cal_dir and (cal_dir / "calibrator_with_quality.pkl").exists():
+        from .match.conformal import Calibrator, ConformalRefuser
+        calibrator = Calibrator.load(cal_dir / "calibrator_with_quality.pkl")
+        if (cal_dir / "conformal.json").exists():
+            refuser = ConformalRefuser.load(cal_dir / "conformal.json")
+    dpath = Path(getattr(args, "distractors", "") or "")
+    if dpath and dpath.exists():
+        from .index.distractors import DistractorDB
+        distractors = DistractorDB.load(dpath)
+    return calibrator, refuser, distractors
+
+
+def _ui(args):
+    """Serve the interactive matcher."""
+    import warnings
+    warnings.filterwarnings("ignore")
+    from .studio.server import serve
+
+    print("loading matcher ...")
+    matcher, _ce = _load_matcher(args)
+    cal, ref, dist = _load_scorers(args)
+    print(f"calibrator {'on' if cal else 'off'} · conformal {'on' if ref else 'off'} · "
+          f"distractors {len(dist) if dist else 0}")
+    serve(photos=Path(args.photos), manifest=Path(args.manifest), images=Path(args.images),
+          items=Path(args.items) if args.items else None, index=Path(args.index),
+          port=args.port, matcher=matcher, calibrator=cal, refuser=ref,
+          distractors=dist, landing="/ui")
 
 
 def _label(args):
@@ -160,7 +194,7 @@ def _load_matcher(args):
         raise SystemExit(f"index is whitened to {ce.whiten_dim} dims but {wpath} is missing")
     keep = cap_views(ce.emb, ce.item_ids, k=args.cap_views)
     idx = FlatIndex(ce.emb[keep], ce.item_ids[keep], ce.view_ids[keep])
-    return Matcher(bb, idx, localise_query=not args.no_localise, tta=not args.no_tta,
+    return Matcher(bb, idx, localise_query=args.localise, tta=not args.no_tta,
                    whitener=whitener), ce
 
 
@@ -248,6 +282,20 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="vpm", description="Visual product matcher")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
+    ui = sub.add_parser("ui", help="interactive matcher: drop a photo, see the decision")
+    ui.add_argument("--index", default="data/index.npz")
+    ui.add_argument("--items", default="data/items.jsonl")
+    ui.add_argument("--images", default="data/images")
+    ui.add_argument("--calibrator", default="data/calibrator")
+    ui.add_argument("--distractors", default="data/distractors.npz")
+    ui.add_argument("--photos", default="data/testset/photos")
+    ui.add_argument("--manifest", default="data/testset/manifest.csv")
+    ui.add_argument("--port", type=int, default=8765)
+    ui.add_argument("--cap-views", type=int, default=4)
+    ui.add_argument("--localise", action="store_true")
+    ui.add_argument("--no-tta", action="store_true")
+    ui.set_defaults(func=_ui)
+
     lb = sub.add_parser("label", help="local tool for labelling the Part B photos")
     lb.add_argument("--photos", default="data/testset/photos",
                     help="directory of phone photographs to label")
@@ -257,7 +305,7 @@ def main() -> None:
     lb.add_argument("--index", default="data/index.npz")
     lb.add_argument("--port", type=int, default=8765)
     lb.add_argument("--cap-views", type=int, default=4)
-    lb.add_argument("--no-localise", action="store_true")
+    lb.add_argument("--localise", action="store_true")
     lb.add_argument("--no-tta", action="store_true")
     lb.add_argument("--no-matcher", action="store_true",
                     help="skip candidate suggestions (faster start)")
@@ -284,7 +332,7 @@ def main() -> None:
     e.add_argument("--split", default="test")
     e.add_argument("-k", type=int, default=5)
     e.add_argument("--cap-views", type=int, default=4)
-    e.add_argument("--no-localise", action="store_true")
+    e.add_argument("--localise", action="store_true")
     e.add_argument("--no-tta", action="store_true")
     e.add_argument("--calibrator", default="data/calibrator")
     e.add_argument("--distractors", default="data/distractors.npz")
@@ -315,7 +363,8 @@ def main() -> None:
     q.add_argument("--items", default="data/items.jsonl")
     q.add_argument("-k", type=int, default=5)
     q.add_argument("--cap-views", type=int, default=4)
-    q.add_argument("--no-localise", action="store_true")
+    q.add_argument("--localise", action="store_true",
+                   help="saliency-crop the query (measured neutral on accuracy, ~2x latency)")
     q.add_argument("--no-tta", action="store_true")
     q.add_argument("--calibrator", default="data/calibrator")
     q.add_argument("--distractors", default="data/distractors.npz")
@@ -327,7 +376,7 @@ def main() -> None:
     n.add_argument("--items", default=None)
     n.add_argument("--iters", type=int, default=25)
     n.add_argument("--cap-views", type=int, default=4)
-    n.add_argument("--no-localise", action="store_true")
+    n.add_argument("--localise", action="store_true")
     n.add_argument("--no-tta", action="store_true")
     n.set_defaults(func=_bench)
 

@@ -73,6 +73,87 @@ expected, side by side, plus the per-condition and marginal-effect tables. It is
 the one thing a results table cannot do: show *why* a case was hard. Thumbnails
 are embedded, so the file travels as a single artefact.
 
+### Interactive matcher
+
+```bash
+vpm ui --items data/items.jsonl        # then open http://127.0.0.1:8765/ui
+```
+
+Drop a photo and see the whole decision: the ranked top-5 with catalogue
+thumbnails and scores, the calibrated confidence, the conformal prediction set,
+an explicit **NO MATCH** badge when it refuses — with the reason stated ("a bank
+of shoes known to be absent matched this photo better than the catalogue's best
+guess") — a per-stage latency breakdown, and the patch-norm saliency overlay.
+
+Stdlib `http.server` only; no Streamlit, no npm, nothing added to the lock file.
+The saliency panel is shown as a **diagnostic**, not as part of the pipeline —
+localisation is off by default (see `REPORT.md` §7).
+
+### Matching a photo, and refusing one
+
+A shoe that **is** in the catalogue:
+
+```bash
+vpm query data/testset_synthetic/hard/11198964_0.jpg --items data/items.jsonl
+```
+
+```
+  1. 0.7629  11198964  Puma — Puma Men Charcoal Grey Jigsaw Sneakers
+  2. 0.3947  20315022  Puma — Puma Men Grey Leather Running Shoes
+  ...
+confidence: p(top-1 correct and in catalogue) = 1.000
+decision:   ACCEPT -- conformal set of 5 at alpha=0.1
+            best distractor similarity 0.335 vs top-1 0.763
+```
+
+A shoe that is **not**:
+
+```bash
+vpm query data/testset_synthetic/ooc/13459372.jpg --items data/items.jsonl
+```
+
+```
+  1. 0.5467  11334966  Puma — Puma Men Navy Blue Dryflex Sneakers
+confidence: p(top-1 correct and in catalogue) = 0.024
+decision:   NO MATCH -- refused (empty conformal set at alpha=0.1)
+            best distractor similarity 0.607 vs top-1 0.547
+```
+
+Note what actually drove that refusal. The system still found a plausible-looking
+Puma sneaker at 0.547 — a raw-similarity threshold would very likely have
+accepted it. It refused because **a bank of shoes that are definitely not in the
+catalogue matched the photo better (0.607) than the catalogue's best guess did
+(0.547)**. That is the likelihood-ratio question from `REPORT.md` §6: *how much
+better does the catalogue explain this photo than a generic pile of shoes does?*
+
+To run the whole out-of-catalogue set:
+
+```bash
+for f in data/testset_synthetic/ooc/*.jpg; do
+  vpm query "$f" --items data/items.jsonl | grep -E "^decision|best distractor"
+done
+```
+
+**And it is not perfect — four of five refuse, one does not:**
+
+| photo | top-1 | best distractor | p | decision | |
+|---|---|---|---|---|---|
+| 13459372 | 0.547 | **0.607** | 0.024 | refused | correct |
+| 10937062 | 0.518 | 0.488 | 0.071 | refused | correct |
+| 11168228 | 0.344 | 0.304 | 0.079 | refused | correct |
+| 18653640 | 0.325 | 0.273 | 0.024 | refused | correct |
+| 19896550 | 0.534 | 0.381 | 0.778 | **accepted** | **wrong** |
+
+Compare rows 1 and 5: **top-1 similarity is almost identical (0.547 vs 0.534) and
+the decisions are opposite.** Raw similarity carries essentially no information
+here — the decision comes entirely from the distractor comparison, which is right
+four times and wrong once. That is the measured FAR of 0.250, and with 20
+negatives it is one photo wide either way.
+
+(Row 3, `11168228`, is the photo that exposed the incomplete colourway graph in
+`REPORT.md` §4.5. It was a false accept before that fix and refuses correctly
+now.)
+
 ### Part B — the hand-shot test set
 
 The 100 adversarial photographs are **not** in this repo; they require items the

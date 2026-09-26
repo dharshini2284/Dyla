@@ -112,6 +112,82 @@ def _match(photo: Path, k: int = 6) -> list[dict]:
     return out
 
 
+def analyse(raw: bytes) -> dict:
+    """Full pipeline on one uploaded image, with per-stage timing.
+
+    Returns the ranked candidates, the calibrated confidence, the conformal
+    decision, and a saliency overlay -- the overlay is rendered even when
+    localisation is off by default, because seeing what the model finds salient
+    is diagnostic regardless of whether the crop is used (see REPORT.md section 7).
+    """
+    import base64 as _b64
+    import io as _io
+    import time as _time
+
+    from PIL import Image
+
+    matcher = _STATE.get("matcher")
+    if matcher is None:
+        return {"error": "no matcher loaded"}
+
+    img = Image.open(_io.BytesIO(raw)).convert("RGB")
+    t0 = _time.perf_counter()
+    res = matcher.lookup(img, k=5)
+    total_ms = (_time.perf_counter() - t0) * 1000
+
+    meta = _STATE["meta"]
+    cands = []
+    for c in res.candidates:
+        m = meta.get(c.item_id, {})
+        cands.append({
+            "item_id": c.item_id, "score": round(float(c.score), 4),
+            "brand": m.get("brand", ""), "name": m.get("name", ""),
+            "colour": m.get("base_colour", ""), "thumb": _catalogue_thumb(c.item_id),
+        })
+
+    out = {
+        "candidates": cands,
+        "timings": {k: round(v, 2) for k, v in res.timings_ms.items()},
+        "total_ms": round(total_ms, 2),
+        "n_crops": res.n_crops,
+        "catalogue": {"items": matcher.index.n_items, "views": len(matcher.index.emb)},
+    }
+
+    # confidence + refusal
+    cal, ref, dist = _STATE.get("calibrator"), _STATE.get("refuser"), _STATE.get("distractors")
+    if cal is not None and res.scores_all is not None:
+        from ..match.confidence import extract, image_quality
+        dsc = dist.scores(res.query_vec) if (dist is not None and res.query_vec is not None) else None
+        feats = extract(res.scores_all, distractor_scores=dsc, quality=image_quality(img),
+                        salient_area=res.salient_area,
+                        final_top1=cands[0]["item_id"] if cands else None)
+        p_match = float(cal.predict_proba(feats.values.reshape(1, -1))[0])
+        out["p_match"] = round(p_match, 4)
+        if dsc is not None and len(dsc):
+            out["distractor_max"] = round(float(dsc.max()), 4)
+        if ref is not None:
+            ps = ref.predict_set([c["item_id"] for c in cands],
+                                 [c["score"] for c in cands], p_match)
+            out["refused"] = ps.refused
+            out["set_items"] = ps.items
+            out["set_p"] = [round(v, 3) for v in ps.p_values]
+            out["alpha"] = ref.alpha
+
+    # saliency overlay
+    try:
+        from ..embed.saliency import heat_overlay, norm_map, salient_box
+        heat = norm_map(matcher.backbone, img)
+        box = salient_box(heat)
+        ov = heat_overlay(img, heat, box)
+        buf = _io.BytesIO()
+        ov.save(buf, "JPEG", quality=80)
+        out["overlay"] = "data:image/jpeg;base64," + _b64.b64encode(buf.getvalue()).decode()
+        out["salient_box"] = [round(v, 3) for v in box]
+    except Exception as exc:
+        out["overlay_error"] = str(exc)
+    return out
+
+
 def _load_rows() -> dict[str, dict]:
     path: Path = _STATE["manifest"]
     if not path.exists():
@@ -169,8 +245,12 @@ class Handler(BaseHTTPRequestHandler):
         u = urlparse(self.path)
         q = parse_qs(u.query)
 
-        if u.path == "/":
+        if u.path in ("/", "/label"):
             return self._send(200, (Path(__file__).parent / "app.html").read_bytes(),
+                              "text/html; charset=utf-8")
+
+        if u.path == "/ui":
+            return self._send(200, (Path(__file__).parent / "ui.html").read_bytes(),
                               "text/html; charset=utf-8")
 
         if u.path == "/api/config":
@@ -217,6 +297,20 @@ class Handler(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             return self._json({"error": "bad json"}, 400)
 
+        if u.path == "/api/analyse":
+            import base64 as _b64
+            data = body.get("image", "")
+            if "," in data:
+                data = data.split(",", 1)[1]
+            try:
+                raw = _b64.b64decode(data)
+            except Exception:
+                return self._json({"error": "bad image payload"}, 400)
+            try:
+                return self._json(analyse(raw))
+            except Exception as exc:
+                return self._json({"error": str(exc)}, 500)
+
         if u.path == "/api/save":
             err = validate_row(body)
             if err:
@@ -235,9 +329,15 @@ def serve(
     index: Path | None = None,
     port: int = 8765,
     matcher=None,
+    calibrator=None,
+    refuser=None,
+    distractors=None,
+    landing: str = "/",
 ) -> None:
     _STATE.update({"photos": Path(photos), "manifest": Path(manifest),
-                   "images": Path(images), "matcher": matcher, "meta": {}})
+                   "images": Path(images), "matcher": matcher, "meta": {},
+                   "calibrator": calibrator, "refuser": refuser,
+                   "distractors": distractors})
     if items and Path(items).exists():
         meta = {}
         with Path(items).open(encoding="utf-8") as fh:
@@ -253,7 +353,7 @@ def serve(
     print(f"\n  labelling {n} photos in {photos}  ({done} already labelled)")
     print(f"  writing   {manifest}")
     print(f"  matcher   {'on -- candidates suggested per photo' if matcher else 'off'}")
-    print(f"\n  open http://127.0.0.1:{port}    (ctrl-c to stop)\n")
+    print(f"\n  open http://127.0.0.1:{port}{landing}    (ctrl-c to stop)\n")
     try:
         srv.serve_forever()
     except KeyboardInterrupt:
