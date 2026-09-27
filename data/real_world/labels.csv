@@ -1,0 +1,185 @@
+image_path,label,catalogue_status,catalogue_item,item_id,sku_confidence,split
+images/catalogue/36617750_rw0001.jpg,air_force_1:black,catalogue,Nike Air Force 1 '07 LX Women's Shoes,36617750,style_match,test
+images/catalogue/36617758_rw0002.jpg,air_force_1:khaki,catalogue,Nike Air Force 1 '07 Women's Shoes,36617758,style_match,test
+images/catalogue/34462810_rw0003.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0004.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0005.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0006.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0007.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0008.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0009.png,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0010.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/34462810_rw0011.jpg,air_force_1:white,catalogue,Nike Air Force 1 '07 Men's Shoes,34462810,exact,test
+images/catalogue/31177605_rw0012.jpg,air_max_1:multi,catalogue,Nike Men Solid Air Max 1 Essential Men's Shoes,31177605,style_match,test
+images/catalogue/31177605_rw0013.jpg,air_max_1:multi,catalogue,Nike Men Solid Air Max 1 Essential Men's Shoes,31177605,style_match,test
+images/catalogue/31177605_rw0014.png,air_max_1:multi,catalogue,Nike Men Solid Air Max 1 Essential Men's Shoes,31177605,style_match,test
+images/catalogue/10715844_rw0015.png,air_max_270:black,catalogue,Nike Men Black Air Max 270 Sneakers,10715844,style_match,test
+images/catalogue/10715844_rw0016.jpg,air_max_270:black,catalogue,Nike Men Black Air Max 270 Sneakers,10715844,style_match,test
+images/catalogue/10715844_rw0017.jpg,air_max_270:blue,catalogue,Nike Men Black Air Max 270 Sneakers,10715844,style_match,test
+images/catalogue/10715844_rw0018.jpg,air_max_270:multi,catalogue,Nike Men Black Air Max 270 Sneakers,10715844,style_match,test
+images/catalogue/10715844_rw0019.jpg,air_max_270:multi,catalogue,Nike Men Black Air Max 270 Sneakers,10715844,style_match,test
+images/catalogue/11979920_rw0020.jpg,air_max_90:black,catalogue,Nike   Men Air Max 90 Running Shoes,11979920,style_match,dev
+images/catalogue/12738510_rw0021.jpg,air_max_90:multi,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,style_match,test
+images/catalogue/38433800_rw0022.jpg,air_max_90:pink,catalogue,Nike Air Max 90 Women's Shoes,38433800,exact,dev
+images/catalogue/12738510_rw0023.jpg,air_max_90:red,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,style_match,test
+images/catalogue/12738510_rw0024.png,air_max_90:white,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,style_match,test
+images/catalogue/12738510_rw0025.jpg,air_max_90:white,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,style_match,test
+images/catalogue/12738510_rw0026.jpg,air_max_90:white,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,style_match,test
+images/catalogue/12738510_rw0027.jpg,air_max_90:white,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,exact,test
+images/catalogue/12738510_rw0028.jpg,air_max_90:white,catalogue,Nike Men White AIR MAX 90 Sneakers,12738510,style_match,test
+images/catalogue/34951298_rw0029.jpg,air_max_ltd:black,catalogue,Nike Air Max LTD 3 Men Shoes,34951298,style_match,test
+images/catalogue/11648052_rw0030.jpg,birkenstock_boston:brown,catalogue,Birkenstock Boston Natural Leather Dark Brown Round Toe Clogs,11648052,exact,test
+images/catalogue/11648052_rw0031.jpg,birkenstock_boston:khaki,catalogue,Birkenstock Boston Natural Leather Dark Brown Round Toe Clogs,11648052,style_match,test
+images/catalogue/34951346_rw0032.jpg,blazer_mid:navy,catalogue,Nike SB Zoom Blazer Mid Skate Shoes,34951346,style_match,test
+images/catalogue/23059422_rw0033.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,style_match,test
+images/catalogue/23059422_rw0034.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/23059422_rw0035.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/23059422_rw0036.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,style_match,test
+images/catalogue/23059422_rw0037.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/23059422_rw0038.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/23059422_rw0039.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/23059422_rw0040.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/23059422_rw0041.jpg,chuck_hi:black,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059422,exact,test
+images/catalogue/39086881_rw0042.jpg,chuck_hi:green,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneaker,39086881,style_match,dev
+images/catalogue/39086880_rw0043.jpg,chuck_hi:khaki,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneaker,39086880,style_match,dev
+images/catalogue/24071800_rw0044.jpg,chuck_hi:maroon,catalogue,Converse Unisex Chuck Taylor All Star Canvas High Top Sneakers,24071800,exact,test
+images/catalogue/22907298_rw0045.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/22907298_rw0046.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/22907298_rw0047.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/22907298_rw0048.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/22907298_rw0049.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/22907298_rw0050.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/22907298_rw0051.jpg,chuck_hi:navy,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907298,exact,test
+images/catalogue/40352564_rw0052.jpg,chuck_hi:pink,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,40352564,exact,test
+images/catalogue/40352564_rw0053.jpg,chuck_hi:pink,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,40352564,exact,test
+images/catalogue/40352564_rw0054.jpg,chuck_hi:pink,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,40352564,exact,test
+images/catalogue/22907272_rw0055.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0056.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0057.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0058.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0059.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0060.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0061.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/22907272_rw0062.jpg,chuck_hi:red,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,22907272,exact,test
+images/catalogue/23059424_rw0063.png,chuck_hi:white,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059424,exact,test
+images/catalogue/23059424_rw0064.jpg,chuck_hi:white,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059424,exact,test
+images/catalogue/23059424_rw0065.jpg,chuck_hi:white,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059424,exact,test
+images/catalogue/23059424_rw0066.jpg,chuck_hi:white,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059424,exact,test
+images/catalogue/23059424_rw0067.jpg,chuck_hi:white,catalogue,Converse Unisex Chuck Taylor All Star High Top Sneakers,23059424,exact,test
+images/catalogue/23059432_rw0068.jpg,chuck_lo:black,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059432,exact,test
+images/catalogue/23059432_rw0069.jpg,chuck_lo:black,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059432,exact,test
+images/catalogue/23059432_rw0070.jpg,chuck_lo:black,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059432,exact,test
+images/catalogue/43104121_rw0071.jpg,chuck_lo:grey,catalogue,Converse Unisex Chuck Taylor All Star Canvas Low Top Sneaker,43104121,exact,test
+images/catalogue/43104121_rw0072.jpg,chuck_lo:grey,catalogue,Converse Unisex Chuck Taylor All Star Canvas Low Top Sneaker,43104121,exact,test
+images/catalogue/43104121_rw0073.jpg,chuck_lo:grey,catalogue,Converse Unisex Chuck Taylor All Star Canvas Low Top Sneaker,43104121,exact,test
+images/catalogue/43104121_rw0074.jpg,chuck_lo:grey,catalogue,Converse Unisex Chuck Taylor All Star Canvas Low Top Sneaker,43104121,exact,test
+images/catalogue/23059428_rw0075.jpg,chuck_lo:maroon,catalogue,Converse Unisex Chuck Taylor All Star Canvas Low Top Sneakers,23059428,exact,test
+images/catalogue/39086905_rw0076.jpg,chuck_lo:mint,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneaker,39086905,style_match,dev
+images/catalogue/22907304_rw0077.jpg,chuck_lo:navy,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,22907304,exact,test
+images/catalogue/22907304_rw0078.jpg,chuck_lo:navy,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,22907304,style_match,test
+images/catalogue/22907304_rw0079.jpg,chuck_lo:navy,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,22907304,exact,test
+images/catalogue/22907306_rw0080.jpg,chuck_lo:red,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,22907306,exact,test
+images/catalogue/22907306_rw0081.jpg,chuck_lo:red,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,22907306,exact,test
+images/catalogue/23059420_rw0082.jpg,chuck_lo:white,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059420,exact,test
+images/catalogue/23059420_rw0083.jpg,chuck_lo:white,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059420,exact,test
+images/catalogue/23059420_rw0084.jpg,chuck_lo:white,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059420,exact,test
+images/catalogue/23059420_rw0085.jpg,chuck_lo:white,catalogue,Converse Unisex Chuck Taylor All Star Low Top Sneakers,23059420,exact,test
+images/catalogue/43104109_rw0086.jpg,chuck_lo:yellow,catalogue,Converse Unisex Chuck Taylor All Star Canvas Low Top Sneaker,43104109,style_match,dev
+images/catalogue/28010344_rw0087.jpg,chuck_lo_leather:black,catalogue,Converse Unisex Chuck Taylor All Star Leather Low Top Sneakers,28010344,exact,dev
+images/catalogue/39744768_rw0088.jpg,gazelle_indoor:blue,catalogue,ADIDAS Originals Gazelle Indoor Shoes,39744768,style_match,dev
+images/catalogue/39744486_rw0089.jpg,handball_spezial:red,catalogue,ADIDAS Originals HANDBALL SPEZIAL W,39744486,exact,dev
+images/catalogue/44102394_rw0090.jpg,jordan_1_high:blue,catalogue,Nike Air Jordan 1 Retro High OG 'Love Letter' Men's Shoes,44102394,style_match,test
+images/catalogue/44102394_rw0091.jpg,jordan_1_high:blue,catalogue,Nike Air Jordan 1 Retro High OG 'Love Letter' Men's Shoes,44102394,style_match,test
+images/catalogue/44102394_rw0092.jpg,jordan_1_high:grey,catalogue,Nike Air Jordan 1 Retro High OG 'Love Letter' Men's Shoes,44102394,style_match,test
+images/catalogue/44102394_rw0093.jpg,jordan_1_high:multi,catalogue,Nike Air Jordan 1 Retro High OG 'Love Letter' Men's Shoes,44102394,style_match,test
+images/catalogue/44102394_rw0094.jpg,jordan_1_high:multi,catalogue,Nike Air Jordan 1 Retro High OG 'Love Letter' Men's Shoes,44102394,style_match,test
+images/catalogue/44102394_rw0095.jpg,jordan_1_high:multi,catalogue,Nike Air Jordan 1 Retro High OG 'Love Letter' Men's Shoes,44102394,style_match,test
+images/catalogue/36555019_rw0096.jpg,jordan_1_mid:pink,catalogue,Nike Air Jordan 1 Mid Men's Shoes,36555019,style_match,dev
+images/catalogue/40449407_rw0097.jpg,predator_club:multi,catalogue,ADIDAS Kids FPREDATOR CLUB FG/MG J Football Shoes,40449407,style_match,dev
+images/catalogue/29020566_rw0098.jpg,samba_og:black,catalogue,ADIDAS Originals Men Samba OG Leather Sneakers,29020566,style_match,test
+images/catalogue/29020566_rw0099.jpg,samba_og:black,catalogue,ADIDAS Originals Men Samba OG Leather Sneakers,29020566,style_match,test
+images/catalogue/29020566_rw0100.jpg,samba_og:black,catalogue,ADIDAS Originals Men Samba OG Leather Sneakers,29020566,style_match,test
+images/catalogue/33945739_rw0101.png,samba_og:blue,catalogue,ADIDAS Originals Men Samba OG Sneakers,33945739,style_match,test
+images/catalogue/33945739_rw0102.jpg,samba_og:blue,catalogue,ADIDAS Originals Men Samba OG Sneakers,33945739,exact,test
+images/catalogue/40500526_rw0103.png,samba_og:grey,catalogue,ADIDAS Originals SAMBA OG,40500526,style_match,dev
+images/catalogue/20070698_rw0104.jpg,stan_smith:black,catalogue,ADIDAS Originals Men Stan Smith Sneakers,20070698,style_match,dev
+images/catalogue/1990058_rw0105.jpg,stan_smith:white_black,catalogue,ADIDAS Originals Men White Stan Smith Sneakers,1990058,style_match,dev
+images/catalogue/370466_rw0106.jpg,stan_smith:white_green,catalogue,ADIDAS Originals Men White & Green Stan Smith Sneakers,370466,exact,test
+images/catalogue/370466_rw0107.jpg,stan_smith:white_green,catalogue,ADIDAS Originals Men White & Green Stan Smith Sneakers,370466,exact,test
+images/catalogue/370466_rw0108.jpg,stan_smith:white_green,catalogue,ADIDAS Originals Men White & Green Stan Smith Sneakers,370466,exact,test
+images/catalogue/16558272_rw0109.jpg,stan_smith_cf:white,catalogue,ADIDAS Originals Kids STAN SMITH CF Sneakers,16558272,exact,test
+images/catalogue/11353384_rw0110.jpg,superstar:white_black,catalogue,ADIDAS Originals Men White & Black Superstar Textured Detail Sneakers,11353384,exact,test
+images/catalogue/11353384_rw0111.jpg,superstar:white_black,catalogue,ADIDAS Originals Men White & Black Superstar Textured Detail Sneakers,11353384,exact,test
+images/catalogue/11353384_rw0112.jpg,superstar:white_black,catalogue,ADIDAS Originals Men White & Black Superstar Textured Detail Sneakers,11353384,exact,test
+images/catalogue/11353384_rw0113.jpg,superstar:white_black,catalogue,ADIDAS Originals Men White & Black Superstar Textured Detail Sneakers,11353384,style_match,test
+images/catalogue/11353384_rw0114.jpg,superstar:white_black,catalogue,ADIDAS Originals Men White & Black Superstar Textured Detail Sneakers,11353384,exact,test
+images/catalogue/32201468_rw0115.jpg,superstar_ii:black,catalogue,ADIDAS Originals Men Superstar II Sneakers,32201468,exact,dev
+images/out_of_catalogue/dr_martens_rw0116.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/crocs_clog_rw0117.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/vans_rw0118.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/crocs_clog_rw0119.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/pointe_shoes_rw0120.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/ski_boots_rw0121.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/onitsuka_tiger_rw0122.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/onitsuka_tiger_rw0123.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/vans_rw0124.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/moon_boots_rw0125.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/air_max_97_rw0126.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/figure_skates_rw0127.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/rubber_boots_rw0128.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/pointe_shoes_rw0129.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/pointe_shoes_rw0130.png,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/pointe_shoes_rw0131.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/birkenstock_arizona_rw0132.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/birkenstock_arizona_rw0133.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/birkenstock_arizona_rw0134.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/birkenstock_gizeh_rw0135.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/birkenstock_arizona_rw0136.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/birkenstock_arizona_rw0137.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/ski_boots_rw0138.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/ski_boots_rw0139.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/rubber_boots_rw0140.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/dr_martens_rw0141.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/ugg_rw0142.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/crocs_clog_rw0143.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/dr_martens_rw0144.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/pointe_shoes_rw0145.png,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/reebok_freestyle_hi_rw0146.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/onitsuka_tiger_rw0147.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/crocs_clog_rw0148.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/crocs_clog_rw0149.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/vans_rw0150.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/dr_martens_rw0151.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/dr_martens_rw0152.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/figure_skates_rw0153.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/air_max_97_rw0154.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/vans_rw0155.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/figure_skates_rw0156.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/figure_skates_rw0157.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/figure_skates_rw0158.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/rubber_boots_rw0159.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/ugg_rw0160.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/rubber_boots_rw0161.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/roller_skates_rw0162.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/rubber_boots_rw0163.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/air_max_720_rw0164.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/ski_boots_rw0165.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/new_balance_480_rw0166.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/air_max_97_rw0167.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/nike_air_ship_rw0168.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/onitsuka_tiger_rw0169.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/vans_rw0170.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/flip_flops_rw0171.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/reebok_freestyle_hi_rw0172.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/reebok_princess_rw0173.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/reebok_freestyle_hi_rw0174.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/reebok_freestyle_hi_rw0175.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/reebok_freestyle_hi_rw0176.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/ski_boots_rw0177.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/skechers_energy_rw0178.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/vintage_ski_boots_rw0179.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/flip_flops_rw0180.jpg,out_of_catalogue,out_of_catalogue,,,,dev
+images/out_of_catalogue/ugg_rw0181.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/ugg_rw0182.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/ugg_rw0183.jpg,out_of_catalogue,out_of_catalogue,,,,test
+images/out_of_catalogue/onitsuka_tiger_rw0184.jpg,out_of_catalogue,out_of_catalogue,,,,test

@@ -195,10 +195,37 @@ negatives it is one photo wide either way.
 `REPORT.md` §4.5. It was a false accept before that fix and refuses correctly
 now.)
 
+### Part B — real-world photos (publicly sourced)
+
+**[`data/real_world/`](data/real_world/README.md)** holds 184 real photographs.
+Ordinary users took them and uploaded them to Wikimedia Commons, under free
+licences. 
+
+- **115 catalogue** photos cover 42 SKUs across 20 models: 71 match model and
+  colourway (`exact`); 44 match the model only (`style_match`).
+- **69 out-of-catalogue** photos cover 22 footwear types absent from the
+  catalogue. Some are hard negatives, like Air Ship and Air Max 97.
+
+The locked test split holds 100 catalogue photos plus 54 out-of-catalogue photos,
+and it is item-disjoint from dev. The labels, source URLs, licences and a log of
+all 1,492 candidates screened are tracked in git. The images themselves are
+re-fetched from their recorded URLs:
+
+```bash
+python scripts/fetch_real_world.py      # ~65 MB, 1 request/s, SHA-256 verified
+```
+
+How sources were chosen is documented in `data/real_world/README.md`. Myntra's
+review photos and Openverse were both rejected under their own terms. So are the
+label definitions and what the set does and does not test. Only 10 of the 42
+labelled SKUs are in the current 3,000-item index, so an index covering
+`index_items.txt` must be built before `vpm eval` can score it.
+
 ### Part B — the hand-shot test set
 
-The 100 adversarial photographs are **not** in this repo; they require items the
-author physically owns (see *Known limitations*). The tooling to produce them:
+The 100 adversarial photographs the brief describes are **not** in this repo;
+they require items the author physically owns (see *Known limitations*). The
+tooling to produce them:
 
 ```bash
 # list what you physically have, one per line: "brand model"
@@ -289,6 +316,19 @@ rest by anti-bot 403s.
 `data/` and large artefacts are gitignored. The catalogue is reproducible from
 step 1; nothing in the repo depends on a snapshot you cannot rebuild.
 
+The real-world photo set follows a stricter rule than the catalogue scrape: the
+source's **Terms of Use**, not only its `robots.txt`, must permit automated
+collection. Myntra's review photos fail that test, because its terms forbid
+automated access to any content on the platform. Openverse's `robots.txt`
+disallows its image API. Wikimedia Commons passes: its content is freely
+licensed, and its `robots.txt` welcomes low-speed bots on article pages. So only
+`/wiki/` pages and `upload.wikimedia.org` were read, at one request per second.
+Each image's author and licence are in `data/real_world/ATTRIBUTION.md`.
+
+The catalogue itself was scraped from Myntra under an earlier check of
+`robots.txt` only. The same Terms of Use clause applies to it; see *Known
+limitations*.
+
 ## Deployment
 
 `scripts/package_deploy.py` emits a 27.5 MB bundle (index artefacts plus one
@@ -314,3 +354,17 @@ Stated here rather than left to be discovered — the full accounting is in
 3. **Catalogue snapshot drift.** A shoe bought two years ago may be delisted while
    a near-identical successor is listed. The manifest carries `sku_confidence`
    for exactly this, and metrics are reported with and without uncertain rows.
+4. **The real-world set is not the hand-shot set, and it is skewed.** It is
+   publicly sourced. It is dominated by famous silhouettes (Converse 55, Nike 37)
+   because those are what people photograph and license freely. Indian
+   mass-market brands that make up much of the catalogue have no representation.
+   Only 71 of its 115 catalogue photos are `exact` model-and-colourway matches.
+   No accuracy number on it exists yet, because most of its SKUs are outside the
+   current index.
+5. **Myntra's Terms of Use prohibit automated access.** Its `robots.txt` permits
+   product pages, and that was the check made when the catalogue was scraped
+   (`DECISIONS.md` D2). But its Terms of Use forbid any "page-scrape, robot,
+   spider or other automatic device". That is why its review photos were not used
+   for the real-world set (D26). The same clause covers the catalogue scrape
+   itself, and that is a decision for the project owner, not something this repo
+   resolves.

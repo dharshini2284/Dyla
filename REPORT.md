@@ -472,6 +472,39 @@ measurement is still worth re-deriving.
 of items the author physically owns, and I will not present synthetic images as
 hand-shot ones.
 
+**In this repo: a real-world set of publicly sourced user photos**
+([`data/real_world/`](data/real_world/README.md)). These are 184 photographs
+that ordinary users took and uploaded to Wikimedia Commons under free licences.
+The shoes are worn, held, on carpets and gravel, in poor light.
+
+| | photos | locked test | dev |
+|---|---|---|---|
+| catalogue, `exact` (model and colourway listed) | 71 | 67 | 4 |
+| catalogue, `style_match` (model listed, colourway not) | 44 | 33 | 11 |
+| out-of-catalogue (22 types: absent types, and absent models of listed brands) | 69 | 54 | 15 |
+
+How the source was chosen:
+- **Myntra's customer-review photos** would have been the ideal source. They
+  were rejected because Myntra's Terms of Use forbid automated access to any
+  content, user uploads included.
+- **Openverse** was rejected by its own `robots.txt`.
+- **Commons** was read only through `/wiki/` pages, at one request per second.
+
+All 1,492 candidates were screened by eye, and every decision is logged. Two
+checks changed the labels rather than confirming them:
+- **Side by side against catalogue images.** The catalogue's own colour field
+  is wrong often enough (an AF1 tagged "White" is maroon) that every `exact`
+  SKU had to be pinned by eye. That moved 15 rows to `style_match`.
+- **A name search of all 36,506 items.** It found that Air Max 1 *is* listed.
+  Three photos screened as negatives were in-catalogue shoes, which is the same
+  contamination as §4.2. They were caught before any evaluation ran.
+
+**What this set cannot tell you yet.** Only 10 of its 42 SKUs are in the
+3,000-item index behind §9. The harness refuses to score unindexed items
+(§4.4), so no real-world accuracy exists yet. It also over-represents famous
+silhouettes (Converse and Nike make up 92 of 115 catalogue photos), which are
+probably easier than the catalogue average.
+
 What *is* built and tested:
 
 - **Manifest schema and validator** — 13-condition vocabulary, `occludes_logo`

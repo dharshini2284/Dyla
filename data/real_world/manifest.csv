@@ -1,0 +1,185 @@
+photo_id,filename,item_id,kind,split,conditions,occludes_logo,sku_confidence,notes
+rw0001,images/catalogue/36617750_rw0001.jpg,36617750,hard,test,cluttered_background,false,style_match,"black suede, shaggy carpet"
+rw0002,images/catalogue/36617758_rw0002.jpg,36617758,hard,test,,false,style_match,Flax colourway
+rw0003,images/catalogue/34462810_rw0003.jpg,34462810,hard,test,,false,exact,on shoebox
+rw0004,images/catalogue/34462810_rw0004.jpg,34462810,hard,test,low_light,false,exact,"white Air Force 1 top and sole, dark surface"
+rw0005,images/catalogue/34462810_rw0005.jpg,34462810,hard,test,low_light,false,exact,"white Air Force 1 on grey box, dark"
+rw0006,images/catalogue/34462810_rw0006.jpg,34462810,hard,test,,false,exact,white Air Force 1 on grey box
+rw0007,images/catalogue/34462810_rw0007.jpg,34462810,hard,test,low_light,false,exact,"white Air Force 1 on cardboard box, dim room"
+rw0008,images/catalogue/34462810_rw0008.jpg,34462810,hard,test,hand_or_foot_in_frame|low_light,false,exact,"off-white, worn"
+rw0009,images/catalogue/34462810_rw0009.png,34462810,hard,test,low_light,false,exact,"white Air Force 1 on black box, dim"
+rw0010,images/catalogue/34462810_rw0010.jpg,34462810,hard,test,cluttered_background,false,exact,asphalt
+rw0011,images/catalogue/34462810_rw0011.jpg,34462810,hard,test,hand_or_foot_in_frame|off_angle,false,exact,POV on grass
+rw0012,images/catalogue/31177605_rw0012.jpg,31177605,hard,test,,false,style_match,"red/white Air Max 1 on box; listed colourways are black, brown/sail"
+rw0013,images/catalogue/31177605_rw0013.jpg,31177605,hard,test,,false,style_match,teal/white Air Max 1; colourway not listed
+rw0014,images/catalogue/31177605_rw0014.png,31177605,hard,test,cluttered_background,false,style_match,red/white Air Max 1 outdoors; colourway not listed
+rw0015,images/catalogue/10715844_rw0015.png,10715844,hard,test,hand_or_foot_in_frame,false,style_match,black/blue
+rw0016,images/catalogue/10715844_rw0016.jpg,10715844,hard,test,,false,style_match,black Air Max 270 on wooden table
+rw0017,images/catalogue/10715844_rw0017.jpg,10715844,hard,test,cluttered_background,false,style_match,blue Air Max 270 on outdoor bench
+rw0018,images/catalogue/10715844_rw0018.jpg,10715844,hard,test,hand_or_foot_in_frame,false,style_match,sail/lilac
+rw0019,images/catalogue/10715844_rw0019.jpg,10715844,hard,test,cluttered_background,false,style_match,white/teal
+rw0020,images/catalogue/11979920_rw0020.jpg,11979920,hard,dev,,false,style_match,wooden table
+rw0021,images/catalogue/12738510_rw0021.jpg,12738510,hard,test,hand_or_foot_in_frame|partial_occlusion,false,style_match,"bronze/volt, held in hand"
+rw0022,images/catalogue/38433800_rw0022.jpg,38433800,hard,dev,hand_or_foot_in_frame|cluttered_background,false,exact,dirt and straw
+rw0023,images/catalogue/12738510_rw0023.jpg,12738510,hard,test,,false,style_match,red/white; listed red is Futura
+rw0024,images/catalogue/12738510_rw0024.png,12738510,hard,test,,false,style_match,white/black/red
+rw0025,images/catalogue/12738510_rw0025.jpg,12738510,hard,test,,false,style_match,"white Air Max 90 on floor, indoor"
+rw0026,images/catalogue/12738510_rw0026.jpg,12738510,hard,test,partial_occlusion,false,style_match,Infrared OG colourway
+rw0027,images/catalogue/12738510_rw0027.jpg,12738510,hard,test,low_light,false,exact,white Air Max 90 pair on black
+rw0028,images/catalogue/12738510_rw0028.jpg,12738510,hard,test,,false,style_match,Infrared OG colourway
+rw0029,images/catalogue/34951298_rw0029.jpg,34951298,hard,test,,false,style_match,LTD 2; catalogue lists LTD 3
+rw0030,images/catalogue/11648052_rw0030.jpg,11648052,hard,test,worn_dirty,false,exact,dark brown leather
+rw0031,images/catalogue/11648052_rw0031.jpg,11648052,hard,test,hand_or_foot_in_frame|partial_occlusion,false,style_match,taupe suede held in hand
+rw0032,images/catalogue/34951346_rw0032.jpg,34951346,hard,test,,false,style_match,navy suede; catalogue lists black SB Blazer Mid
+rw0033,images/catalogue/23059422_rw0033.jpg,23059422,hard,test,,false,style_match,"file says black, looks navy: colour ambiguous"
+rw0034,images/catalogue/23059422_rw0034.jpg,23059422,hard,test,cropped_item,false,exact,close indoor
+rw0035,images/catalogue/23059422_rw0035.jpg,23059422,hard,test,hand_or_foot_in_frame|off_angle,false,exact,POV park field
+rw0036,images/catalogue/23059422_rw0036.jpg,23059422,hard,test,off_angle|specular_reflection,false,style_match,"patent-leather edition, not listed"
+rw0037,images/catalogue/23059422_rw0037.jpg,23059422,hard,test,,false,exact,grey carpet
+rw0038,images/catalogue/23059422_rw0038.jpg,23059422,hard,test,worn_dirty|off_angle,false,exact,top-down
+rw0039,images/catalogue/23059422_rw0039.jpg,23059422,hard,test,hand_or_foot_in_frame|cluttered_background,false,exact,POV over street
+rw0040,images/catalogue/23059422_rw0040.jpg,23059422,hard,test,hand_or_foot_in_frame|small_in_frame,false,exact,"worn, lakeshore"
+rw0041,images/catalogue/23059422_rw0041.jpg,23059422,hard,test,hand_or_foot_in_frame|off_angle,false,exact,top-down
+rw0042,images/catalogue/39086881_rw0042.jpg,39086881,hard,dev,worn_dirty,false,style_match,"green hi-top, worn/dirty, indoor"
+rw0043,images/catalogue/39086880_rw0043.jpg,39086880,hard,dev,harsh_flash,false,style_match,khaki canvas; colour family only
+rw0044,images/catalogue/24071800_rw0044.jpg,24071800,hard,test,hand_or_foot_in_frame|worn_dirty,false,exact,"maroon hi-top worn, grass"
+rw0045,images/catalogue/22907298_rw0045.jpg,22907298,hard,test,hand_or_foot_in_frame|off_angle,false,exact,top-down
+rw0046,images/catalogue/22907298_rw0046.jpg,22907298,hard,test,off_angle,false,exact,top-down
+rw0047,images/catalogue/22907298_rw0047.jpg,22907298,hard,test,hand_or_foot_in_frame|motion_blur,false,exact,walking on steps
+rw0048,images/catalogue/22907298_rw0048.jpg,22907298,hard,test,hand_or_foot_in_frame,false,exact,worn
+rw0049,images/catalogue/22907298_rw0049.jpg,22907298,hard,test,worn_dirty,false,exact,"navy hi-top dirty, indoor floor"
+rw0050,images/catalogue/22907298_rw0050.jpg,22907298,hard,test,hand_or_foot_in_frame|off_angle,false,exact,festival field POV
+rw0051,images/catalogue/22907298_rw0051.jpg,22907298,hard,test,hand_or_foot_in_frame|cluttered_background,false,exact,yellow railing
+rw0052,images/catalogue/40352564_rw0052.jpg,40352564,hard,test,hand_or_foot_in_frame|low_light|worn_dirty,false,exact,damaged
+rw0053,images/catalogue/40352564_rw0053.jpg,40352564,hard,test,hand_or_foot_in_frame|off_angle,false,exact,POV on rock
+rw0054,images/catalogue/40352564_rw0054.jpg,40352564,hard,test,hand_or_foot_in_frame|low_light,false,exact,"pink hi-top worn, dim light"
+rw0055,images/catalogue/22907272_rw0055.jpg,22907272,hard,test,hand_or_foot_in_frame|low_light,false,exact,dangling feet
+rw0056,images/catalogue/22907272_rw0056.jpg,22907272,hard,test,cluttered_background,false,exact,red hi-top on table with miniature keychain
+rw0057,images/catalogue/22907272_rw0057.jpg,22907272,hard,test,hand_or_foot_in_frame|off_angle,false,exact,low angle street
+rw0058,images/catalogue/22907272_rw0058.jpg,22907272,hard,test,cluttered_background,false,exact,"kids size, harbour wall"
+rw0059,images/catalogue/22907272_rw0059.jpg,22907272,hard,test,cropped_item,false,exact,outsole visible
+rw0060,images/catalogue/22907272_rw0060.jpg,22907272,hard,test,cluttered_background,false,exact,on grass
+rw0061,images/catalogue/22907272_rw0061.jpg,22907272,hard,test,hand_or_foot_in_frame|motion_blur,false,exact,"worn, mid-air"
+rw0062,images/catalogue/22907272_rw0062.jpg,22907272,hard,test,hand_or_foot_in_frame|cropped_item,false,exact,"red hi-top worn close, concrete"
+rw0063,images/catalogue/23059424_rw0063.png,23059424,hard,test,cluttered_background,false,exact,bench outdoors
+rw0064,images/catalogue/23059424_rw0064.jpg,23059424,hard,test,off_angle,false,exact,top-down
+rw0065,images/catalogue/23059424_rw0065.jpg,23059424,hard,test,hand_or_foot_in_frame,false,exact,paving
+rw0066,images/catalogue/23059424_rw0066.jpg,23059424,hard,test,hand_or_foot_in_frame|cropped_item,false,exact,"white hi-top worn, close, jeans"
+rw0067,images/catalogue/23059424_rw0067.jpg,23059424,hard,test,hand_or_foot_in_frame|specular_reflection,false,exact,feet on car window
+rw0068,images/catalogue/23059432_rw0068.jpg,23059432,hard,test,hand_or_foot_in_frame|low_light,false,exact,dark outdoors
+rw0069,images/catalogue/23059432_rw0069.jpg,23059432,hard,test,partial_occlusion|cluttered_background,false,exact,cat in front
+rw0070,images/catalogue/23059432_rw0070.jpg,23059432,hard,test,partial_occlusion,false,exact,inside plastic bag
+rw0071,images/catalogue/43104121_rw0071.jpg,43104121,hard,test,,false,exact,carpet
+rw0072,images/catalogue/43104121_rw0072.jpg,43104121,hard,test,partial_occlusion,false,exact,in box with tissue
+rw0073,images/catalogue/43104121_rw0073.jpg,43104121,hard,test,hand_or_foot_in_frame|off_angle,false,exact,top-down
+rw0074,images/catalogue/43104121_rw0074.jpg,43104121,hard,test,hand_or_foot_in_frame|off_angle,false,exact,POV gravel
+rw0075,images/catalogue/23059428_rw0075.jpg,23059428,hard,test,,false,exact,orange laces
+rw0076,images/catalogue/39086905_rw0076.jpg,39086905,hard,dev,hand_or_foot_in_frame|low_light,false,style_match,mint; nearest listed is sea/lime green
+rw0077,images/catalogue/22907304_rw0077.jpg,22907304,hard,test,,false,exact,"navy low-top pair, indoor"
+rw0078,images/catalogue/22907304_rw0078.jpg,22907304,hard,test,hand_or_foot_in_frame|off_angle,false,style_match,"leather edition, colour not listed"
+rw0079,images/catalogue/22907304_rw0079.jpg,22907304,hard,test,worn_dirty,false,exact,torn
+rw0080,images/catalogue/22907306_rw0080.jpg,22907306,hard,test,worn_dirty,false,exact,red low-top dirty on bedsheet
+rw0081,images/catalogue/22907306_rw0081.jpg,22907306,hard,test,,false,exact,on shoebox
+rw0082,images/catalogue/23059420_rw0082.jpg,23059420,hard,test,hand_or_foot_in_frame|off_angle,false,exact,POV
+rw0083,images/catalogue/23059420_rw0083.jpg,23059420,hard,test,worn_dirty|cluttered_background,false,exact,patterned blanket
+rw0084,images/catalogue/23059420_rw0084.jpg,23059420,hard,test,low_light,false,exact,dark background
+rw0085,images/catalogue/23059420_rw0085.jpg,23059420,hard,test,low_light,false,exact,"white low-top pair, dark background"
+rw0086,images/catalogue/43104109_rw0086.jpg,43104109,hard,dev,hand_or_foot_in_frame|off_angle,false,style_match,"yellow low-top worn, outdoor low angle"
+rw0087,images/catalogue/28010344_rw0087.jpg,28010344,hard,dev,,false,exact,leather low top
+rw0088,images/catalogue/39744768_rw0088.jpg,39744768,hard,dev,,false,style_match,"blue Gazelle Indoor pair, indoor"
+rw0089,images/catalogue/39744486_rw0089.jpg,39744486,hard,dev,,false,exact,"red Handball Spezial, indoor"
+rw0090,images/catalogue/44102394_rw0090.jpg,44102394,hard,test,cluttered_background,false,style_match,"Royal, on manhole"
+rw0091,images/catalogue/44102394_rw0091.jpg,44102394,hard,test,cluttered_background,false,style_match,"Royal, on grass"
+rw0092,images/catalogue/44102394_rw0092.jpg,44102394,hard,test,cluttered_background,false,style_match,CO.JP silver
+rw0093,images/catalogue/44102394_rw0093.jpg,44102394,hard,test,hand_or_foot_in_frame|partial_occlusion,false,style_match,"Bred High, held"
+rw0094,images/catalogue/44102394_rw0094.jpg,44102394,hard,test,cluttered_background,false,style_match,Banned/Bred
+rw0095,images/catalogue/44102394_rw0095.jpg,44102394,hard,test,worn_dirty,false,style_match,SB edition
+rw0096,images/catalogue/36555019_rw0096.jpg,36555019,hard,dev,,false,style_match,Crimson Tint
+rw0097,images/catalogue/40449407_rw0097.jpg,40449407,hard,dev,cluttered_background,false,style_match,white/pink colourway not listed (catalogue: kids peach)
+rw0098,images/catalogue/29020566_rw0098.jpg,29020566,hard,test,hand_or_foot_in_frame,false,style_match,"black Samba worn, grey carpet"
+rw0099,images/catalogue/29020566_rw0099.jpg,29020566,hard,test,off_angle,false,style_match,low angle
+rw0100,images/catalogue/29020566_rw0100.jpg,29020566,hard,test,cluttered_background,false,style_match,Samba Super (fold-over tongue); black not listed
+rw0101,images/catalogue/33945739_rw0101.png,33945739,hard,test,hand_or_foot_in_frame,false,style_match,"navy, worn"
+rw0102,images/catalogue/33945739_rw0102.jpg,33945739,hard,test,,false,exact,blue suede on shoebox
+rw0103,images/catalogue/40500526_rw0103.png,40500526,hard,dev,hand_or_foot_in_frame|low_light,false,style_match,"grey/white Samba worn, dim indoor"
+rw0104,images/catalogue/20070698_rw0104.jpg,20070698,hard,dev,off_angle,false,style_match,top-down
+rw0105,images/catalogue/1990058_rw0105.jpg,1990058,hard,dev,,false,style_match,white/black heel tab variant
+rw0106,images/catalogue/370466_rw0106.jpg,370466,hard,test,,false,exact,wooden floor
+rw0107,images/catalogue/370466_rw0107.jpg,370466,hard,test,,false,exact,white/green Stan Smith on floorboards
+rw0108,images/catalogue/370466_rw0108.jpg,370466,hard,test,,false,exact,wooden table
+rw0109,images/catalogue/16558272_rw0109.jpg,16558272,hard,test,,false,exact,"velcro, concrete"
+rw0110,images/catalogue/11353384_rw0110.jpg,11353384,hard,test,,false,exact,junior size on shoebox
+rw0111,images/catalogue/11353384_rw0111.jpg,11353384,hard,test,worn_dirty,false,exact,"white/black Superstar worn and dirty, carpet"
+rw0112,images/catalogue/11353384_rw0112.jpg,11353384,hard,test,cluttered_background,false,exact,outdoor ledge
+rw0113,images/catalogue/11353384_rw0113.jpg,11353384,hard,test,off_angle,false,style_match,Nigo collab edition
+rw0114,images/catalogue/11353384_rw0114.jpg,11353384,hard,test,partial_occlusion,false,exact,in box with tissue
+rw0115,images/catalogue/32201468_rw0115.jpg,32201468,hard,dev,,false,exact,on shoebox
+rw0116,images/out_of_catalogue/dr_martens_rw0116.jpg,,out_of_catalogue,test,,false,exact,"Dr. Martens boots caked in festival mud, worn"
+rw0117,images/out_of_catalogue/crocs_clog_rw0117.jpg,,out_of_catalogue,test,,false,exact,"grey Crocs clogs worn POV, forest"
+rw0118,images/out_of_catalogue/vans_rw0118.jpg,,out_of_catalogue,test,,false,exact,"Vans slip-ons, two people POV on grass"
+rw0119,images/out_of_catalogue/crocs_clog_rw0119.jpg,,out_of_catalogue,test,,false,exact,"tan Crocs clog worn, indoor by chair"
+rw0120,images/out_of_catalogue/pointe_shoes_rw0120.jpg,,out_of_catalogue,dev,,false,exact,"pointe shoes on feet, wooden floor, fifth position"
+rw0121,images/out_of_catalogue/ski_boots_rw0121.jpg,,out_of_catalogue,dev,,false,exact,ski boots on red box with rental tag
+rw0122,images/out_of_catalogue/onitsuka_tiger_rw0122.jpg,,out_of_catalogue,test,,false,exact,white/blue Onitsuka Mexico 66 on wooden table with box
+rw0123,images/out_of_catalogue/onitsuka_tiger_rw0123.jpg,,out_of_catalogue,test,,false,exact,yellow/black Onitsuka Mexico 66 on blanket
+rw0124,images/out_of_catalogue/vans_rw0124.jpg,,out_of_catalogue,test,,false,exact,checkerboard Vans Old Skool on stone ledge
+rw0125,images/out_of_catalogue/moon_boots_rw0125.jpg,,out_of_catalogue,test,,false,exact,purple after-ski moon boots by window
+rw0126,images/out_of_catalogue/air_max_97_rw0126.jpg,,out_of_catalogue,test,,false,exact,silver Air Max 97 on red Nike box
+rw0127,images/out_of_catalogue/figure_skates_rw0127.jpg,,out_of_catalogue,test,,false,exact,white figure skates on moss with pine cone
+rw0128,images/out_of_catalogue/rubber_boots_rw0128.jpg,,out_of_catalogue,test,,false,exact,row of kids rubber boots on gravel
+rw0129,images/out_of_catalogue/pointe_shoes_rw0129.jpg,,out_of_catalogue,dev,,false,exact,"dancer tying pointe shoe ribbons, seated"
+rw0130,images/out_of_catalogue/pointe_shoes_rw0130.png,,out_of_catalogue,dev,,false,exact,"pointe shoes on feet, wooden floor, front view"
+rw0131,images/out_of_catalogue/pointe_shoes_rw0131.jpg,,out_of_catalogue,dev,,false,exact,"pointe shoes en pointe, dark background"
+rw0132,images/out_of_catalogue/birkenstock_arizona_rw0132.jpg,,out_of_catalogue,test,,false,exact,"Birkenstock Arizona sandals worn, parquet"
+rw0133,images/out_of_catalogue/birkenstock_arizona_rw0133.jpg,,out_of_catalogue,test,,false,exact,"navy Birkenstock Arizona sandals worn with socks, wooden floor (catalogue has Birkenstock clogs only)"
+rw0134,images/out_of_catalogue/birkenstock_arizona_rw0134.jpg,,out_of_catalogue,test,,false,exact,Birkenstock Arizona worn on brick pavement
+rw0135,images/out_of_catalogue/birkenstock_gizeh_rw0135.jpg,,out_of_catalogue,dev,,false,exact,white Birkenstock Gizeh thong sandal indoor
+rw0136,images/out_of_catalogue/birkenstock_arizona_rw0136.jpg,,out_of_catalogue,test,,false,exact,Birkenstock Arizona on wooden dock above water
+rw0137,images/out_of_catalogue/birkenstock_arizona_rw0137.jpg,,out_of_catalogue,test,,false,exact,"black Birkenstock Arizona worn, wooden floor"
+rw0138,images/out_of_catalogue/ski_boots_rw0138.jpg,,out_of_catalogue,dev,,false,exact,blue ski boots on wooden floor
+rw0139,images/out_of_catalogue/ski_boots_rw0139.jpg,,out_of_catalogue,dev,,false,exact,ski boots with shells on grass
+rw0140,images/out_of_catalogue/rubber_boots_rw0140.jpg,,out_of_catalogue,test,,false,exact,"brown rubber boots worn, rope and metal floor"
+rw0141,images/out_of_catalogue/dr_martens_rw0141.jpg,,out_of_catalogue,test,,false,exact,"black 1460 with yellow laces, pink-lit room"
+rw0142,images/out_of_catalogue/ugg_rw0142.jpg,,out_of_catalogue,test,,false,exact,chestnut UGG boots worn by kerb
+rw0143,images/out_of_catalogue/crocs_clog_rw0143.jpg,,out_of_catalogue,test,,false,exact,"grey Crocs clogs worn, dim indoor"
+rw0144,images/out_of_catalogue/dr_martens_rw0144.jpg,,out_of_catalogue,test,,false,exact,cherry-red 1460 boots on patterned armchair
+rw0145,images/out_of_catalogue/pointe_shoes_rw0145.png,,out_of_catalogue,dev,,false,exact,"peach pointe shoes on feet, warm light"
+rw0146,images/out_of_catalogue/reebok_freestyle_hi_rw0146.jpg,,out_of_catalogue,test,,false,exact,"white Reebok Freestyle Hi worn, dark bench (Freestyle absent from catalogue)"
+rw0147,images/out_of_catalogue/onitsuka_tiger_rw0147.jpg,,out_of_catalogue,test,,false,exact,white/red Onitsuka Tiger Corsair on tree stump
+rw0148,images/out_of_catalogue/crocs_clog_rw0148.jpg,,out_of_catalogue,test,,false,exact,red Crocs clog on pebble beach
+rw0149,images/out_of_catalogue/crocs_clog_rw0149.jpg,,out_of_catalogue,test,,false,exact,"navy Crocband clog worn, train floor"
+rw0150,images/out_of_catalogue/vans_rw0150.jpg,,out_of_catalogue,test,,false,exact,navy Vans Old Skool worn on baseball dirt
+rw0151,images/out_of_catalogue/dr_martens_rw0151.jpg,,out_of_catalogue,test,,false,exact,"black Dr. Martens Mary Jane on sofa, dim"
+rw0152,images/out_of_catalogue/dr_martens_rw0152.jpg,,out_of_catalogue,test,,false,exact,navy 1460 boots on wooden floor
+rw0153,images/out_of_catalogue/figure_skates_rw0153.jpg,,out_of_catalogue,test,,false,exact,hands lacing white figure skates
+rw0154,images/out_of_catalogue/air_max_97_rw0154.jpg,,out_of_catalogue,test,,false,exact,"silver Air Max 97 worn, street level (97 absent from catalogue)"
+rw0155,images/out_of_catalogue/vans_rw0155.jpg,,out_of_catalogue,test,,false,exact,brown Vans on sand by rock
+rw0156,images/out_of_catalogue/figure_skates_rw0156.jpg,,out_of_catalogue,test,,false,exact,white skates on blue cloth
+rw0157,images/out_of_catalogue/figure_skates_rw0157.jpg,,out_of_catalogue,test,,false,exact,white skates on autumn leaves
+rw0158,images/out_of_catalogue/figure_skates_rw0158.jpg,,out_of_catalogue,test,,false,exact,"worn brown leather skates, close"
+rw0159,images/out_of_catalogue/rubber_boots_rw0159.jpg,,out_of_catalogue,test,,false,exact,kids patterned rubber boots on school cubby shelf
+rw0160,images/out_of_catalogue/ugg_rw0160.jpg,,out_of_catalogue,test,,false,exact,chestnut UGG boots worn on graffiti escalator
+rw0161,images/out_of_catalogue/rubber_boots_rw0161.jpg,,out_of_catalogue,test,,false,exact,rubber boots used as plant pots on steps
+rw0162,images/out_of_catalogue/roller_skates_rw0162.jpg,,out_of_catalogue,test,,false,exact,white quad roller skates on concrete floor
+rw0163,images/out_of_catalogue/rubber_boots_rw0163.jpg,,out_of_catalogue,test,,false,exact,"black rubber boots on camo cloth, brick floor"
+rw0164,images/out_of_catalogue/air_max_720_rw0164.jpg,,out_of_catalogue,dev,,false,exact,Air Max 720 on box on grass (720 absent from catalogue)
+rw0165,images/out_of_catalogue/ski_boots_rw0165.jpg,,out_of_catalogue,dev,,false,exact,blue Lange ski boot on floor
+rw0166,images/out_of_catalogue/new_balance_480_rw0166.jpg,,out_of_catalogue,test,,false,exact,"New Balance 480 - brand present, model absent"
+rw0167,images/out_of_catalogue/air_max_97_rw0167.jpg,,out_of_catalogue,test,,false,exact,Air Max 97 animal print on box
+rw0168,images/out_of_catalogue/nike_air_ship_rw0168.jpg,,out_of_catalogue,dev,,false,exact,Nike Air Ship (Jordan 1 predecessor) - not in catalogue; hard negative
+rw0169,images/out_of_catalogue/onitsuka_tiger_rw0169.jpg,,out_of_catalogue,test,,false,exact,white/red Onitsuka Tiger on wooden floor
+rw0170,images/out_of_catalogue/vans_rw0170.jpg,,out_of_catalogue,test,,false,exact,navy Vans on wooden floor
+rw0171,images/out_of_catalogue/flip_flops_rw0171.jpg,,out_of_catalogue,dev,,false,exact,"flip-flops worn on beach sand, sea behind"
+rw0172,images/out_of_catalogue/reebok_freestyle_hi_rw0172.jpg,,out_of_catalogue,test,,false,exact,white Freestyle Hi with rainbow laces on pavement
+rw0173,images/out_of_catalogue/reebok_princess_rw0173.jpg,,out_of_catalogue,test,,false,exact,"white Reebok Princess pair on tiled floor, flash (Princess absent from catalogue)"
+rw0174,images/out_of_catalogue/reebok_freestyle_hi_rw0174.jpg,,out_of_catalogue,test,,false,exact,"black Freestyle Hi worn, concrete"
+rw0175,images/out_of_catalogue/reebok_freestyle_hi_rw0175.jpg,,out_of_catalogue,test,,false,exact,"pink Freestyle Hi worn, seated"
+rw0176,images/out_of_catalogue/reebok_freestyle_hi_rw0176.jpg,,out_of_catalogue,test,,false,exact,"white Freestyle Hi on wooden bench, hands lacing"
+rw0177,images/out_of_catalogue/ski_boots_rw0177.jpg,,out_of_catalogue,dev,,false,exact,"black ski boot on white paper, cluttered room"
+rw0178,images/out_of_catalogue/skechers_energy_rw0178.jpg,,out_of_catalogue,test,,false,exact,"Skechers Energy - brand present, model absent"
+rw0179,images/out_of_catalogue/vintage_ski_boots_rw0179.jpg,,out_of_catalogue,test,,false,exact,old brown leather ski boots on weathered porch
+rw0180,images/out_of_catalogue/flip_flops_rw0180.jpg,,out_of_catalogue,dev,,false,exact,"worn leather flip-flops on dusty ground, top-down"
+rw0181,images/out_of_catalogue/ugg_rw0181.jpg,,out_of_catalogue,test,,false,exact,chestnut UGG boots on wooden decking
+rw0182,images/out_of_catalogue/ugg_rw0182.jpg,,out_of_catalogue,test,,false,exact,baby UGG booties held in hands
+rw0183,images/out_of_catalogue/ugg_rw0183.jpg,,out_of_catalogue,test,,false,exact,tall chestnut UGG boots worn on bark mulch
+rw0184,images/out_of_catalogue/onitsuka_tiger_rw0184.jpg,,out_of_catalogue,test,,false,exact,silver Onitsuka Tiger worn walking on asphalt

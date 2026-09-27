@@ -1,4 +1,9 @@
-data/
+data/*
+# The real-world test set's labels, metadata and attribution are tracked; the
+# photos themselves are third-party Commons uploads and are re-fetched by
+# scripts/fetch_real_world.py from the URLs recorded in metadata.csv.
+!data/real_world/
+data/real_world/images/
 reports/*.html
 reports/*.png
 *.pyc
@@ -10,6 +15,6 @@ models/
 SUBMISSION_EMAIL.md
 
 # Deployment bundle: regenerable with scripts/package_deploy.py, ~28 MB of
-# thumbnails. (The bare `data/` rule above already matches deploy/bundle/data
-# at any depth; this is here so that is deliberate rather than incidental.)
+# thumbnails. (`data/*` above is anchored to the repo root, so this rule is what
+# keeps deploy/bundle/data out.)
 deploy/bundle/

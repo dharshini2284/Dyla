@@ -191,3 +191,32 @@ studio's two `.html` files were absent from a real install because
 source tree and hides it completely, so 35 tests passed against broken
 packaging. The regression test now resolves files relative to the *imported*
 module rather than the repo root.
+
+### D26 — Real-world photos from Wikimedia Commons, after rejecting the obvious source
+The synthetic-corruption set cannot show how the matcher behaves on a photo a
+person actually took. The ideal source was **Myntra's own customer-review
+photos**: the same SKUs, photographed by buyers. **Rejected on its terms, not
+its `robots.txt`.** The Terms of Use forbid any "page-scrape, robot, spider or
+other automatic device" for accessing any content, user-generated content
+included. **Openverse** was also rejected: its `robots.txt` disallows the image
+API and names this agent. **Wikimedia Commons** passes both tests. Only its
+`/wiki/` pages were read (its robots.txt welcomes low-speed bots there; `/w/`
+is disallowed), at one request per second.
+
+All 1,492 candidates were screened by eye and 1,248 were rejected, each with a
+reason (`data/real_world/screening_log.csv`). Result: **115 catalogue photos,
+of which 71 are exact and 44 style-match, across 42 SKUs; plus 69
+out-of-catalogue photos across 22 types.** The test split holds exactly 100
+catalogue photos and is item-disjoint from dev.
+
+Two checks changed the labels rather than confirming them:
+- **Side by side against catalogue images.** The catalogue's `base_colour` is
+  unreliable: an Air Force 1 tagged "White" is maroon/pink. So every `exact`
+  group's SKU was pinned by eye, and 15 rows were downgraded to `style_match`.
+- **A name search of all 36,506 items for every out-of-catalogue model.** It
+  found two Air Max 1 SKUs that screening had missed. Those three photos would
+  have been catalogue shoes labelled as negatives, the exact contamination §4.2
+  describes. They moved to `catalogue / style_match`.
+
+This set does not replace the hand-shot Part B set (D15): It is also skewed toward famous silhouettes, because those are what
+the public photographs.
