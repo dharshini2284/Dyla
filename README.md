@@ -14,6 +14,47 @@ of it.
 
 ---
 
+## For reviewers — running this yourself
+
+**One command, about seven minutes:**
+
+```bash
+git clone https://github.com/priya-2102/Dyla && cd Dyla
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
+./scripts/quickstart.sh          # ~7 min: scrapes, indexes, calibrates, evaluates
+vpm ui --items data/items.jsonl  # then open http://127.0.0.1:8765/ui
+```
+
+Timed from a clean clone: **398 s (6.6 min)** for a 400-item index, producing
+hard R@1 0.708, refusal AUROC 0.931, and a full `reports/eval/report.md` plus the
+visual failure grid in `reports/eval/errors.html`.
+
+Nothing in that path is stubbed — it is the same code the full run uses, on a
+smaller catalogue. `./scripts/run_all.sh` builds the 3,000-item index the numbers
+in `REPORT.md` come from, and takes hours because it scrapes and downloads
+roughly fifty thousand images.
+
+The derived artefacts (index, thumbnails, calibrator) are **not** in the repo —
+they are regenerable, and the full-resolution image set is ~30 GB. The quickstart
+exists so a clean clone is genuinely runnable rather than nominally so.
+
+**Or as a container**, if you would rather not build a Python environment:
+
+```bash
+python scripts/package_deploy.py && docker build -t vpm-ui .
+docker run --rm -p 8765:8765 vpm-ui
+```
+
+### A note on links
+
+`http://127.0.0.1:8765` is **loopback only** — it is not reachable by anyone
+else, including over a local network. There is no authentication on this server
+and the catalogue is scraped third-party product data, so it is deliberately not
+something to leave on a public URL. For a live walkthrough, a temporary tunnel
+(`cloudflared tunnel --url http://localhost:8765`) gives a URL that dies when you
+close it; for anything longer-lived see `deploy/README.md`.
+
 ## Quick start
 
 Requires Python 3.11+. On Apple Silicon, PyTorch MPS is used automatically; the
