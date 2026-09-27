@@ -87,10 +87,10 @@ vpm index --backbone siglip2-base --whiten 256 --max-views 4 \
           --exclude data/testset_synthetic/exclude_from_index.json \
           --out data/index.npz
 
-# 6. Match a single photo
+# 7. Match a single photo
 vpm query path/to/photo.jpg --index data/index.npz --items data/items.jsonl
 
-# 7. Latency breakdown for one lookup
+# 11. Latency breakdown for one lookup
 vpm bench --index data/index.npz --iters 25
 
 # 8. Build the held-out distractor bank -- footwear absent from the catalogue at
@@ -272,6 +272,8 @@ src/vpm/
 | **αQE / DBA default off** | Both inflate false accepts or destroy colourway distinctions. Built, measured, left off. |
 | **Distractor bank** | Confidence is a likelihood ratio -- how much better the catalogue explains the photo than a generic pile of shoes does -- not an absolute similarity. |
 | **Geometric verification as a feature** | One-sided evidence: measured 91 inliers on a self-match, 2 on a cross-match. Useless for ranking, useful for calibration. |
+| **Saliency localiser off by default** | Built as the main answer to the domain gap, then measured: **identical** accuracy (hard R@1 0.556 either way) for 47% of the latency budget. `--localise` restores it. |
+| **Stdlib server, not Streamlit** | ~30 transitive dependencies is a bad trade in a project whose gate is "runs from a clean checkout". |
 
 ---
 
@@ -286,6 +288,18 @@ rest by anti-bot 403s.
 
 `data/` and large artefacts are gitignored. The catalogue is reproducible from
 step 1; nothing in the repo depends on a snapshot you cannot rebuild.
+
+## Deployment
+
+`scripts/package_deploy.py` emits a 27.5 MB bundle (index artefacts plus one
+200px thumbnail per item — the 30 GB in the working tree is full-resolution
+multi-view imagery kept for experiments). `docker build -t vpm-ui .` produces a
+verified image: 825 MB RSS, 115 ms per lookup on two CPU threads.
+
+See **[deploy/README.md](deploy/README.md)** for Cloud Run and Oracle Always Free,
+and for the 2026 free-tier situation — HuggingFace Spaces withdrew free compute
+Spaces, and Fly.io and Koyeb withdrew free tiers, so several obvious answers no
+longer apply.
 
 ## Known limitations
 

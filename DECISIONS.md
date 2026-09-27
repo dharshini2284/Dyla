@@ -95,6 +95,15 @@ the distinction that matters most here. Both behind flags, off.
 "no match". One-sided evidence: useless for ordering the low-texture majority,
 useful as one calibrator input among many.
 
+### D14 — Scope cut: multi-item and the adaptive head
+Both planned, both cut. The brief says solve one thing properly rather than four
+loosely, and rewards error analysis over feature count. Cutting them is the
+choice that keeps §4 and §5 of the report deep.
+
+### D15 — No synthetic photos presented as hand-shot
+The synthetic test set exists so the harness runs from a clean checkout and as
+the automated stumper. It is labelled as such everywhere and its numbers are
+never reported as Part B results.
 ### D16 — A guard, not a parameter, for test-set/index agreement
 `vpm eval` had never been run end to end. It surfaced a silent bug: 34 of 40
 "in-catalogue" test items were not in the index, so most in-catalogue photos were
@@ -116,12 +125,69 @@ Added a name-derived model key (colour words stripped); clusters 23,450 -> 12,08
 Refusal numbers measured before this were pessimistic, because some "false
 accepts" were near-identical twins the hold-out failed to exclude.
 
-### D14 — Scope cut: multi-item and the adaptive head
-Both planned, both cut. The brief says solve one thing properly rather than four
-loosely, and rewards error analysis over feature count. Cutting them is the
-choice that keeps §4 and §5 of the report deep.
+### D19 — ⟲ reversal: the saliency localiser is off by default
+Built as the main answer to the domain gap, debugged through DINOv2's
+artefact-token problem (D9), extended with connected-component filtering. Then I
+rendered what it actually selected and found it taking the top 35% of a cluttered
+frame — pure background — while the shoe sat in the middle. The obvious inference
+was that this explained cluttered background at 0/23; the ablation said otherwise.
+Accuracy is **identical** either way (hard R@1 0.556 both), and it costs 47% of
+the latency budget (112 ms → 60 ms without). Off by default, `--localise` to
+restore. Not deleted: synthetic clutter shrinks the shoe into high-frequency
+noise, harsher than a real photo on a carpet, so it may earn its cost on
+hand-shot photographs. **Found only by looking at the output** — the numbers
+alone never would have.
 
-### D15 — No synthetic photos presented as hand-shot
-The synthetic test set exists so the harness runs from a clean checkout and as
-the automated stumper. It is labelled as such everywhere and its numbers are
-never reported as Part B results.
+### D20 — Build the tools that remove the bottleneck, not a demo
+The matcher was the interesting engineering; the slow part is labelling 130
+photographs without introducing errors that silently corrupt every number.
+`vpm label` makes the two expensive mistakes structurally impossible: it offers
+matcher candidates with thumbnails so catalogue ids are *confirmed* not typed
+(a wrong id turns an in-catalogue photo into an out-of-catalogue one — the exact
+bug behind D16), and conditions are checkboxes bound to one vocabulary.
+`reports/eval/errors.html` shows each failure as query / saliency / returned /
+correct, which is the one thing a table cannot do. A generic "upload a photo"
+demo was the obvious build and the least useful — though `vpm ui` was added
+later, and rendering its saliency overlay is what produced D19.
+
+### D21 — Stdlib HTTP server over Streamlit
+Streamlit would have been perhaps an hour faster to write and costs ~30
+transitive dependencies (tornado, altair, pydeck, pyarrow) in a project whose
+gate is *"does it run from a clean checkout"*, plus it re-runs the script on
+every interaction so a 400 MB backbone needs careful caching. The studio server
+pattern already existed. Zero new dependencies.
+
+### D22 — Bind loopback by default, containers opt in
+The server serves local files and runs a model with **no authentication**.
+It hardcoded `127.0.0.1`, which is unreachable from inside a container; the fix
+was a `--host` flag rather than switching the default to `0.0.0.0`, so exposing
+it is always a deliberate act.
+
+### D23 — Ship thumbnails, not the working tree
+The repo carries ~30 GB of full-resolution multi-view images, which exist for
+experiments — re-encoding at other resolutions, the incremental test, the
+bake-off. Serving needs one 200px thumbnail per indexed item: 3.9 KB each,
+27.5 MB bundle for 3,000 items against 14 MB of index artefacts. Torch installs
+from PyTorch's CPU index (the default wheel drags in ~2.5 GB of unusable CUDA)
+and the backbone is baked in at build time so scale-to-zero platforms do not pay
+400 MB per cold start. Measured: 825 MB container RSS.
+
+### D24 — A seven-minute path, because hours is the same as never
+The gate is *"does it run from a clean checkout"*. `run_all.sh` satisfied that
+literally and took hours, which invites a reviewer to stop reading — and the
+derived artefacts are gitignored, so a fresh clone had no catalogue at all.
+`quickstart.sh` builds a genuine 400-item system through the identical code path
+in **398 s**, verified from a real clone. Testing it caught two bugs that would
+have hit every reviewer: relative script paths that only worked from the repo
+root, and a negative pool so small the calibrator refused to fit (at 400 scraped
+/ 400 indexed only 26 items were absent, and both the distractor bank and the
+calibrator's negatives come from absent items — it now scrapes 3× what it
+indexes).
+
+### D25 — Package data is not optional
+Building the deployment image surfaced a bug the entire suite was blind to: the
+studio's two `.html` files were absent from a real install because
+`pyproject.toml` declared no package data. An **editable** install resolves to the
+source tree and hides it completely, so 35 tests passed against broken
+packaging. The regression test now resolves files relative to the *imported*
+module rather than the repo root.

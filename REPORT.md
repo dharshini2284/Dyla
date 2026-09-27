@@ -11,8 +11,6 @@ places where the obvious approach was tried, measured, and rejected — includin
 two where the thing I rejected was **my own plan**, and one where I rejected the
 recommendation of the AI review I had commissioned.
 
-| | |
-|---|---|
 | Footwear pool harvested | **345,331 SKUs** |
 | Catalogue scraped (multi-view) | **36,506 items / 181,446 images / 30 GB** |
 | Backbone | SigLIP 2 ViT-B/16 @256, PCA-whitened to 256d |
@@ -29,7 +27,6 @@ catalogue to overlap with shoes I can physically put in front of a camera.
 I probed five sources before committing:
 
 | Source | Result |
-|---|---|
 | Nike | `robots.txt` says "just crawl it" but `Disallow: */p/`; product-feed API 404s. **Rejected on its own rules.** |
 | Adidas / ASICS / New Balance | 403 (Akamai). **Rejected.** |
 | Puma India | Works — `__NEXT_DATA__`, Cloudinary images. Viable but **single-brand**. |
@@ -107,7 +104,7 @@ localisation needs.
 
 ---
 
-## 4. Five bugs I found in my own evaluation
+## 4. Eight bugs I found in my own work, in seven places
 
 The brief says it would rather read an honest account of a system at 70% than a
 claim of 95% with no error analysis. These are the three places my own harness
@@ -239,6 +236,45 @@ This is the second time the same class of bug has bitten this project (§4.2 was
 the first), which is itself the lesson: *near-duplicate leakage into a held-out
 set is the default failure mode of open-set evaluation over a product catalogue*,
 and a vendor's own variant metadata is not sufficient to prevent it.
+
+### 4.6 The `.html` files were missing from a real install
+
+Building the deployment image surfaced a bug the entire test suite was blind to.
+The studio serves two HTML files that live beside its modules; `pyproject.toml`
+declared no package data, so neither was installed. The container started, served
+`/ui`, and threw:
+
+```
+FileNotFoundError: .../site-packages/vpm/studio/ui.html
+```
+
+An **editable** install hides this completely — it resolves to the source tree,
+where the HTML sits next to the code — so thirty-five tests passed against broken
+packaging. The regression test now resolves the files relative to the *imported*
+module rather than the repo root, which is what the server actually does at
+runtime.
+
+The general shape: a test suite that only ever runs against `pip install -e .`
+cannot see packaging at all.
+
+### 4.7 The quickstart could not fit a calibrator, and would have failed for every reviewer
+
+Running the reviewer quickstart from a genuinely clean clone died at stage five:
+
+```
+pool: 374 indexed items, 26 genuinely-absent items
+too few genuinely-absent items; widen the exclusion set
+```
+
+The distractor bank and the calibrator's negatives both come from items absent
+from the index at style level. At 400 items scraped and 400 indexed, nearly
+everything is indexed and there is nothing left to draw negatives from. It now
+scrapes three times what it indexes.
+
+This one is worth recording because it is a property of the *design*, not a typo:
+the refusal machinery needs a pool of known-absent items, and that requirement is
+invisible at full scale and fatal at small scale. The same test also caught
+relative script paths that only worked from the repo root.
 
 ---
 
@@ -498,8 +534,8 @@ Test split: 90 hard, 30 clean, 20 out-of-catalogue.
 
 | set | R@1 SKU | R@1 style | R@5 SKU | median latency |
 |---|---|---|---|---|
-| clean | 1.000 [1.000, 1.000] | 1.000 | 1.000 | 159 ms |
-| hard | **0.556** [0.467, 0.644] | 0.567 | 0.656 | 160 ms |
+| clean | 1.000 [1.000, 1.000] | 1.000 | 1.000 | 60 ms |
+| hard | **0.556** [0.456, 0.644] | 0.567 | 0.656 | 60 ms |
 
 **The clean 1.000 is an artefact and I am not claiming it as a result.** In the
 synthetic set the "clean control" *is* the indexed image, so the match is exact
@@ -564,9 +600,9 @@ reported at style level as well as SKU level. Measured:
 
 | class | n | share of errors |
 |---|---|---|
-| silhouette_confusion (same article type, different brand) | 18 | **0.450** |
-| catastrophic (unrelated article type) | 13 | 0.325 |
-| same_brand_confusion | 8 | 0.200 |
+| catastrophic (unrelated article type) | 16 | **0.400** |
+| silhouette_confusion (same article type, different brand) | 14 | 0.350 |
+| same_brand_confusion | 9 | 0.225 |
 | **colourway_confusion** | **1** | **0.025** |
 
 Colourway confusion is **2.5% of errors**, not the bulk of them. The system is
@@ -587,14 +623,18 @@ Three configurations, in the order they were measured. The third is the one that
 counts — the first two were taken before §4.5 was found, so their hold-out leaked
 colourway twins.
 
-| | no distractor bank | + distractor bank | **+ corrected clusters** |
+| | no distractor bank | + distractor bank | **+ corrected clusters, shipped** |
 |---|---|---|---|
-| AUROC, in-catalogue vs out | 0.726 | 0.850 | **0.827** |
+| AUROC, in-catalogue vs out | 0.726 | 0.850 | **0.837** |
 | Calibrated vs raw-cosine AUROC | 0.924 / 0.890 | 0.935 / 0.873 | **0.924 / 0.876** |
 | False accept rate | 0.550 | 0.300 | **0.250** |
-| False reject rate | 0.258 | 0.258 | **0.292** (nominal α = 0.10) |
-| **Wrong-accept rate** | 0.100 | 0.083 | **0.075** |
-| AURC / E-AURC | 0.147 / 0.027 | 0.143 / 0.023 | **0.150 / 0.029** |
+| False reject rate | 0.258 | 0.258 | **0.267** (nominal α = 0.10) |
+| **Wrong-accept rate** | 0.100 | 0.083 | **0.083** |
+| AURC / E-AURC | 0.147 / 0.027 | 0.143 / 0.023 | **0.147 / 0.026** |
+
+The third column is what `reports/eval/report.json` in this repo contains; it was
+re-run after the localiser was switched off (§7), which is why it differs
+slightly from the second.
 
 **What is solid, and what is not.** The distractor bank is a genuine, large effect
 — column 1 to column 2 halves the false-accept rate, and the fitted coefficients
@@ -603,7 +643,7 @@ features, and the calibrated score's margin over raw cosine roughly doubles).
 
 **The column 2 → column 3 movement is not a result and I am not claiming it as
 one.** With 20 negatives, FAR 0.300 → 0.250 is *one photo*. AUROC moved the other
-way (0.850 → 0.827) and FRR rose. I predicted in §4.5 that the leaky hold-out
+way (0.850 → 0.837) and FRR rose. I predicted in §4.5 that the leaky hold-out
 made the earlier numbers pessimistic; the corrected run is consistent with that
 but **cannot confirm it at this sample size**, and the honest summary is that the
 third column is measured on a cleaner and genuinely harder hold-out — 70 excluded
@@ -627,12 +667,12 @@ That is the likelihood-ratio argument from §6 doing exactly what it was suppose
 to: asking *how much better does the catalogue explain this photo than a generic
 pile of shoes does*, instead of asking whether a similarity clears a threshold.
 
-**This is the weakest part of the system and I am not going to dress it up.** A
-FAR of 0.55 means the refuser accepts more than half of the out-of-catalogue
-shoes. With only 20 negatives the interval on that is very wide, but the point
-estimate is bad.
+**This is still the weakest part of the system.** A FAR of 0.250 means one in
+four out-of-catalogue shoes is accepted — better than the 0.550 the first
+configuration managed, but with only 20 negatives that is five photos and the
+interval around it is very wide.
 
-**The conformal coverage guarantee did not hold**: FRR came out at 0.258 against
+**The conformal coverage guarantee did not hold**: FRR came out at 0.267 against
 a nominal 0.10. This is the exchangeability violation predicted in §6 —
 calibration is fitted on synthetically corrupted catalogue views, and the test
 queries are a different distribution. The guarantee is only as good as its
@@ -714,7 +754,7 @@ which point every embedding *does* have to be recomputed.
    projection head. Both were planned; both were cut to keep the error analysis
    deep rather than the feature list long, which is what the brief asks for.
 
-## 11. Two things built that the brief did not ask for
+## 11. Four things built that the brief did not ask for
 
 Both exist because of something measured, not because a UI seemed nice.
 
@@ -751,6 +791,24 @@ argument for building the visualisation, not for building the demo.
 Stdlib `http.server` throughout. Streamlit would have been faster to write and
 would have added roughly thirty transitive dependencies to a project whose gate
 is *"does it run from a clean checkout"* — a bad trade here.
+
+**A deployable image and a seven-minute quickstart.** The gate is whether this
+runs from a clean checkout. It technically did, via `run_all.sh`, which scrapes
+twelve thousand products and takes hours — and the derived artefacts are
+gitignored, so a fresh clone had no catalogue to search at all. `quickstart.sh`
+builds a real 400-item system through the identical code path in **398 seconds**,
+verified from an actual clone, reaching hard R@1 0.708 and refusal AUROC 0.931.
+
+For deployment, `scripts/package_deploy.py` emits a **27.5 MB** bundle — the 30 GB
+in the working tree is full-resolution multi-view imagery kept for experiments,
+where serving needs one 200px thumbnail per item (3.9 KB each). The image runs at
+**825 MB RSS** and 115 ms per lookup on two CPU threads. Built and verified end to
+end; `deploy/README.md` has the numbers and the free-tier situation, which moved
+in 2026 (HuggingFace Spaces withdrew free compute Spaces; Fly.io and Koyeb
+withdrew free tiers; Oracle Always Free and Cloud Run still fit).
+
+Both of these exist because "it runs" and "someone else can run it" are different
+claims, and only the second one is being tested.
 
 **On reproducibility:** `requirements.lock` is regenerated from the working
 environment, and it caught real drift — numpy moved 1.26 → 2.4.6 and torch
